@@ -9,8 +9,8 @@ function Localization (opts) {
     var that = this;
     this.defaultNamespace = opts.defaultNamespace || '';
     if (opts.lang) {
-        this.loadLocale(opts.lang, function () {
-            opts.callback(that.getFormatter(opts.namespace), that.getFormatter.bind(that));
+        this.loadLocale(opts.lang, function (locale) {
+            opts.callback(that.getFormatter(opts.namespace), that.getFormatter.bind(that), locale);
         });
     }
 }
