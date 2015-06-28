@@ -1,0 +1,17 @@
+{
+  "name": "l",
+  "version": "0.1.0",
+  "main": "index.js",
+  "dependencies": {
+      
+  },
+  "ignore": [],
+  "authors": [
+    "Brett Zamir <brettz9@yahoo.com>"
+  ],
+  "description": "Utility function and methods for l10n",
+  "keywords": [
+    "l10n"
+  ],
+  "license": "MIT"
+}
