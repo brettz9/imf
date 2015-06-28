@@ -8,9 +8,9 @@ function Localization (opts) {
     
     var that = this;
     this.defaultNamespace = opts.defaultNamespace || '';
-    if (opts.lang) {
-        this.loadLocale(opts.lang, function (locale) {
-            opts.callback(that.getFormatter(opts.namespace), that.getFormatter.bind(that), locale);
+    if (opts.languages) {
+        this.loadLocale(opts.languages, function () {
+            opts.callback.apply(opts.callback, [that.getFormatter(opts.namespace), that.getFormatter.bind(that), locale, Array.from(arguments)]);
         });
     }
 }
@@ -22,20 +22,25 @@ Localization.prototype.getFormatter = function (ns) {
         if (!values && !formats) {
             return message;
         }
-        var msg = new IntlMessageFormat(message, [that.lang], formats);
+        var msg = new IntlMessageFormat(message, that.langs, formats);
         return msg.format(values);
     };
 };
 
-Localization.prototype.loadLocale = function (lang, cb) {
+Localization.prototype.loadLocale = function (langs, cb) {
     var that = this;
-    this.lang = lang;
-    getJSON(lang + '.json', function (locale) {
-        that.locale = locale;
-        if (cb) {
-            cb(locale);
+    this.langs = langs;
+    getJSON(
+        langs.map(function (lang) {
+            return lang + '.json';
+        }),
+        function () {
+            that.locales = Array.from(arguments);
+            if (cb) {
+                cb.apply(null, that.locales);
+            }
         }
-    });
+    );
 };
 
 return Localization;
