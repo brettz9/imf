@@ -56,6 +56,7 @@ IMF.prototype.getFormatter = function (ns, sep) {
 
 IMF.prototype.loadLocales = function (langs, cb) {
     var that = this;
+    langs = langs || navigator.language || 'en-US';
     this.langs = Array.isArray(langs) ? langs : [langs];
     getJSON(
         langs.map(this.localeFileResolver, this),
