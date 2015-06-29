@@ -32,8 +32,8 @@ function IMF (opts) {
 IMF.prototype.getFormatter = function (ns, sep) {
     var that = this;
 
-    function messageForNSParts (ns, sep, key) {
-        var loc = that.locales[0];
+    function messageForNSParts (locale, ns, sep, key) {
+        var loc = locale;
         var found = ns.split(sep).every(function (nsPart) {
             loc = loc[nsPart];
             return loc && typeof loc === 'object';
@@ -45,7 +45,14 @@ IMF.prototype.getFormatter = function (ns, sep) {
     ns = Array.isArray(ns) ? (ns.join(sep) + sep) : ns ;
 
     return function (key, values, formats) {
-        var message = that.locales[0][(ns ? ns + sep : ns) + key] || messageForNSParts(ns, sep, key);
+        var message;
+        that.locales.some(function (locale) {
+            message = locale[(ns ? ns + sep : ns) + key] || messageForNSParts(locale, ns, sep, key);
+            return message;
+        });
+        if (!message) {
+            throw "Message not found for locales " + that.langs + " with key " + key + ", namespace " + ns + ", and namespace separator " + sep;
+        }
         if (!values && !formats) {
             return message;
         }
