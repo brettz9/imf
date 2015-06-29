@@ -19,7 +19,7 @@ function IMF (opts) {
         return this.basePath + lang + '.json';
     };
     
-    if (opts.languages) {
+    if (opts.languages || opts.callback) {
         this.loadLocales(opts.languages, function () {
             var locales = Array.from(arguments);
             if (opts.callback) {
@@ -59,7 +59,7 @@ IMF.prototype.loadLocales = function (langs, cb) {
     langs = langs || navigator.language || 'en-US';
     this.langs = Array.isArray(langs) ? langs : [langs];
     getJSON(
-        langs.map(this.localeFileResolver, this),
+        this.langs.map(this.localeFileResolver, this),
         function () {
             that.locales = Array.from(arguments);
             if (cb) {
