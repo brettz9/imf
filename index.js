@@ -62,7 +62,7 @@ IMF.prototype.loadLocales = function (langs, cb) {
         function () {
             that.locales = Array.from(arguments);
             if (cb) {
-                cb.apply(null, that.locales);
+                cb.apply(that, that.locales);
             }
         }
     );
