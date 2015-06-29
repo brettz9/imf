@@ -17,9 +17,11 @@ A convenience wrapper for [intl-messageformat](https://github.com/yahoo/intl-mes
 
 ```js
 IMF({
-    languages: ['en', 'es', 'pt', 'zh-CN'],
-    callback: function () {
-        
+    languages: ['zh-CN', 'en'],
+    callback: function (l, getFormatter /*, enLocale, esLocale, ptLocale, zhCNLocale*/) {
+        alert(l("Localized value!")); // Looks up "Localized value!" in Chinese file (at "locales/zh-CN.json") and in English (at "locales/en.json") if not present in Chinese
+        var tk = getFormatter('tablekey');
+        alert(tk("Tablekey localized value!")); // Equivalent to l("tablekey.Tablekey localized value!")
     }
 });
 ```
