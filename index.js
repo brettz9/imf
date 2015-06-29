@@ -4,6 +4,9 @@
 var Localization = (function () {'use strict';
 
 function Localization (opts) {
+    if (!(this instanceof Localization)) {
+        return new Localization(opts);
+    }
     opts = opts || {};
     
     var that = this;
