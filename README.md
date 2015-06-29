@@ -78,3 +78,4 @@ OR
 # To-dos
 
 1. Bower publish: Awaiting [intl-messageformat](https://github.com/yahoo/intl-messageformat) Bower unpublishing so can add own copy as dependency. Then change my own usage example to refer to the `intl-messageformat` directory.
+1. Add logic to recover if file like `en-US.json` is not present but `en.json` is.
