@@ -42,7 +42,7 @@ IMF({
     1. A generic formatter building function (see `getFormatter` method)
     1. Locale files as JSON objects
 - `getFormatter(ns, sep)` - A generic formatter building method; can be supplied an optional namespace and optional separator, defaulting otherwise to `defaultNamespace` and `defaultSeparator`, respectively. The namespace can either be an array of namespace parts or a string with the separator already applied. The namespace (along with separator interpolated between and after) will be prepended to the key supplied by the user when the formatter function is called. Will be automatically invoked (and the result supplied to `callback`) if `languages` is supplied upon instantiation.
-- `loadLocales(langs, cb)` - Will be automatically invoked if `languages` is supplied upon instantiation. The second callback argument is optional and will be invoked with each locale object as an argument after the locales have loaded (with the locales also available as an array of objects on the `locales` property).
+- `loadLocales(langs, cb)` - Loads the locale file objects. Will be automatically invoked if `languages` is supplied upon instantiation. The second callback argument is optional and will be invoked with each locale object as an argument after the locales have loaded (with the locales also available as an array of objects on the `locales` property).
 
 ## Properties
 
