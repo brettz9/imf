@@ -8,17 +8,34 @@ function Localization (opts) {
     
     var that = this;
     this.defaultNamespace = opts.defaultNamespace || '';
+    this.defaultSeparator = opts.defaultSeparator || '.';
+    
     if (opts.languages) {
         this.loadLocale(opts.languages, function () {
-            opts.callback.apply(opts.callback, [that.getFormatter(opts.namespace), that.getFormatter.bind(that), locale, Array.from(arguments)]);
+            var locales = Array.from(arguments);
+            opts.callback.apply(opts.callback, [that.getFormatter(opts.namespace), that.getFormatter.bind(that), locales]);
         });
     }
 }
 
-Localization.prototype.getFormatter = function (ns) {
+Localization.prototype.getFormatter = function (ns, sep) {
     var that = this;
+
+    function messageForNSParts (ns, sep, key) {
+        var loc = that.locale;
+        var found = ns.split(sep).every(function (nsPart) {
+            loc = loc[nsPart];
+            return loc && typeof loc === 'object';
+        });
+        return (found && loc[key]) ? loc[key] : '';
+    }
+    ns = ns || this.defaultNamespace;
+    sep = sep || this.defaultSeparator;
+    ns = Array.isArray(ns) ? (ns.join(sep) + sep) : ns;
+
     return function (key, values, formats) {
-        var message = that.locale[(ns || that.defaultNamespace) + key];
+        
+        var message = that.locale[ns + key] || messageForNSParts(ns, sep, key);
         if (!values && !formats) {
             return message;
         }
