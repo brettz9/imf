@@ -10,8 +10,14 @@ function IMF (opts) {
     opts = opts || {};
     
     var that = this;
+
     this.defaultNamespace = opts.defaultNamespace || '';
-    this.defaultSeparator = opts.defaultSeparator || '.';
+    this.defaultSeparator = opts.defaultSeparator === undefined ? '.' : opts.defaultSeparator;
+    this.basePath = opts.basePath || 'locales/';
+
+    this.localeFileResolver = opts.localeFileResolver || function (lang) {
+        return this.basePath + lang + '.json';
+    };
     
     if (opts.languages) {
         this.loadLocales(opts.languages, function () {
@@ -34,8 +40,8 @@ IMF.prototype.getFormatter = function (ns, sep) {
         });
         return (found && loc[key]) ? loc[key] : '';
     }
-    ns = ns || this.defaultNamespace;
-    sep = sep || this.defaultSeparator;
+    ns = ns === undefined ? this.defaultNamespace : ns;
+    sep = sep === undefined ? this.defaultSeparator : sep;
     ns = Array.isArray(ns) ? (ns.join(sep) + sep) : ns;
 
     return function (key, values, formats) {
@@ -52,9 +58,7 @@ IMF.prototype.loadLocales = function (langs, cb) {
     var that = this;
     this.langs = Array.isArray(langs) ? langs : [langs];
     getJSON(
-        langs.map(function (lang) {
-            return lang + '.json';
-        }),
+        langs.map(this.localeFileResolver, this),
         function () {
             that.locales = Array.from(arguments);
             if (cb) {
