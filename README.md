@@ -54,7 +54,7 @@ OR
 
 - *Constructor(options)* - A constructor (which can be used without `new`) to be supplied an options object with the following optional properties:
   - `languages` - Array of BCP 47 language tags in order of preference. Can also be a string for a single tag (e.g., "en-US"), or, if not supplied, will default to `navigator.language` or `en-US`. Will be used as the second argument to the `IntlMessageFormat` constructor.
-  - `namespace` - Initial namespace for the formatter function supplied as the first argument to `callback`. Defaults to value of `defaultNamespace`. Namespaces may be expressed as an array of namespace parts or as a string. Will be used in conjunction with a separator. See the example above for an illustration of the two allowable JSON file format structures.
+  - `namespace` - Initial namespace for the formatter function supplied as the first argument to `callback`. Defaults to value of `defaultNamespace`. Namespaces may be expressed as an array of namespace parts or as a string. Will be used in conjunction with a separator. See the example above for an illustration of the two allowable JSON file format structures. Note that namespace parts can be indefinitely nested whether as subobjects or as additional separator-separated strings.
   - `defaultNamespace` - Used when a namespace is not provided to `getFormatter`. Defaults to empty string.
   - `defaultSeparator` - Separator to be used with namespaces. Defaults to `.`.
   - `basePath` - Base path for locale file resolution. Defaults to `locales/`.
