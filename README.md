@@ -10,6 +10,7 @@ A convenience wrapper for [intl-messageformat](https://github.com/yahoo/intl-mes
 
 ```html
 <script src="bower_components/imf/intl-messageformat-with-locales.min.js"></script>
+<script src="bower_components/get-json/index.js"></script>
 <script src="bower_components/imf/index.js"></script>
 ```
 
