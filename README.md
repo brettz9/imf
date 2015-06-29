@@ -77,5 +77,5 @@ OR
 
 # To-dos
 
-1. Bower publish: Awaiting [intl-messageformat](https://github.com/yahoo/intl-messageformat) Bower unpublishing so can add own copy as dependency. Then change my own usage example to refer to the `intl-messageformat` directory.
+1. Bower publish: Awaiting [intl-messageformat](https://github.com/yahoo/intl-messageformat) Bower unpublishing so can add own copy as dependency. Then change my own usage example and demo to refer to the `intl-messageformat` directory.
 1. Add logic to recover if file like `en-US.json` is not present but `en.json` is (might enhance `getJSON` errBack to capture thrown object with file property indicating the file causing the error).
