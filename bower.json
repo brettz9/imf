@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "main": "index.js",
   "dependencies": {
-      
+      "get-json": "1.x"
   },
   "ignore": ["bower_components"],
   "authors": [

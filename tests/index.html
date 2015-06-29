@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Demo</title>
+    <script src="../intl-messageformat-with-locales.min.js"></script>
+    <script src="../bower_components/get-json/index.js"></script>
+    <script src="../index.js"></script>
+</head>
+<body>
+
+<script>
+IMF({
+    languages: ['zh-CN', 'en-US'],
+    callback: function (l, getFormatter /*, enLocale, esLocale, ptLocale, zhCNLocale*/) {
+        alert(l("Localized value!")); // Looks up "Localized value!" in Chinese file (at "locales/zh-CN.json") and in English (at "locales/en.json") if not present in Chinese
+        var tk = getFormatter('tablekey');
+        alert(tk("Tablekey localized value!")); // Equivalent to l("tablekey.Tablekey localized value!")
+    }
+});
+</script>
+
+
+</body>
+</html>
