@@ -5,11 +5,11 @@
   "dependencies": {
       
   },
-  "ignore": [],
+  "ignore": ["bower_components"],
   "authors": [
     "Brett Zamir <brettz9@yahoo.com>"
   ],
-  "description": "Utility function and methods for l10n",
+  "description": "A convenience wrapper for Yahoo's intl-messageformat localization library",
   "keywords": [
     "l10n"
   ],

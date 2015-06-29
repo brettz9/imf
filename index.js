@@ -14,7 +14,7 @@ function Localization (opts) {
     this.defaultSeparator = opts.defaultSeparator || '.';
     
     if (opts.languages) {
-        this.loadLocale(opts.languages, function () {
+        this.loadLocales(opts.languages, function () {
             var locales = Array.from(arguments);
             opts.callback.apply(opts.callback, [that.getFormatter(opts.namespace), that.getFormatter.bind(that), locales]);
         });
@@ -25,7 +25,7 @@ Localization.prototype.getFormatter = function (ns, sep) {
     var that = this;
 
     function messageForNSParts (ns, sep, key) {
-        var loc = that.locale;
+        var loc = that.locales;
         var found = ns.split(sep).every(function (nsPart) {
             loc = loc[nsPart];
             return loc && typeof loc === 'object';
@@ -38,7 +38,7 @@ Localization.prototype.getFormatter = function (ns, sep) {
 
     return function (key, values, formats) {
         
-        var message = that.locale[ns + key] || messageForNSParts(ns, sep, key);
+        var message = that.locales[ns + key] || messageForNSParts(ns, sep, key);
         if (!values && !formats) {
             return message;
         }
@@ -47,7 +47,7 @@ Localization.prototype.getFormatter = function (ns, sep) {
     };
 };
 
-Localization.prototype.loadLocale = function (langs, cb) {
+Localization.prototype.loadLocales = function (langs, cb) {
     var that = this;
     this.langs = Array.isArray(langs) ? langs : [langs];
     getJSON(
