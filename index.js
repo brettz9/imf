@@ -46,7 +46,7 @@ Localization.prototype.getFormatter = function (ns, sep) {
 
 Localization.prototype.loadLocale = function (langs, cb) {
     var that = this;
-    this.langs = langs;
+    this.langs = Array.isArray(langs) ? langs : [langs];
     getJSON(
         langs.map(function (lang) {
             return lang + '.json';
