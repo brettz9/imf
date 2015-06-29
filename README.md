@@ -26,6 +26,28 @@ IMF({
 });
 ```
 
+JSON file structure:
+
+```json
+{
+    "Localized value!": "Chinese translation of \"Localized value!\"",
+    "tablekey.Tablekey localized value!": "Chinese translation of \"tablekey.Tablekey localized value!\""
+}
+```
+
+OR
+
+```json
+{
+    "Localized value!": "Chinese translation of \"Localized value!\"",
+    "tablekey": {
+        "Tablekey localized value!": "Chinese translation of \"tablekey.Tablekey localized value!\""
+    }
+}
+```
+
+
+
 # API
 
 ## Methods
