@@ -1,11 +1,11 @@
 /*jslint vars:true, bitwise:true*/
 /*globals getJSON, IntlMessageFormat */
 
-var Localization = (function () {'use strict';
+var IMF = (function () {'use strict';
 
-function Localization (opts) {
-    if (!(this instanceof Localization)) {
-        return new Localization(opts);
+function IMF (opts) {
+    if (!(this instanceof IMF)) {
+        return new IMF(opts);
     }
     opts = opts || {};
     
@@ -16,12 +16,14 @@ function Localization (opts) {
     if (opts.languages) {
         this.loadLocales(opts.languages, function () {
             var locales = Array.from(arguments);
-            opts.callback.apply(opts.callback, [that.getFormatter(opts.namespace), that.getFormatter.bind(that), locales]);
+            if (opts.callback) {
+                opts.callback.apply(opts.callback, [that.getFormatter(opts.namespace), that.getFormatter.bind(that), locales]);
+            }
         });
     }
 }
 
-Localization.prototype.getFormatter = function (ns, sep) {
+IMF.prototype.getFormatter = function (ns, sep) {
     var that = this;
 
     function messageForNSParts (ns, sep, key) {
@@ -37,7 +39,6 @@ Localization.prototype.getFormatter = function (ns, sep) {
     ns = Array.isArray(ns) ? (ns.join(sep) + sep) : ns;
 
     return function (key, values, formats) {
-        
         var message = that.locales[ns + key] || messageForNSParts(ns, sep, key);
         if (!values && !formats) {
             return message;
@@ -47,7 +48,7 @@ Localization.prototype.getFormatter = function (ns, sep) {
     };
 };
 
-Localization.prototype.loadLocales = function (langs, cb) {
+IMF.prototype.loadLocales = function (langs, cb) {
     var that = this;
     this.langs = Array.isArray(langs) ? langs : [langs];
     getJSON(
@@ -63,6 +64,6 @@ Localization.prototype.loadLocales = function (langs, cb) {
     );
 };
 
-return Localization;
+return IMF;
 
 }());
