@@ -42,12 +42,12 @@ IMF.prototype.getFormatter = function (ns, sep) {
     }
     ns = ns === undefined ? this.defaultNamespace : ns;
     sep = sep === undefined ? this.defaultSeparator : sep;
-    ns = Array.isArray(ns) ? (ns.join(sep) + sep) : ns ;
+    ns = Array.isArray(ns) ? ns.join(sep) : ns;
 
     return function (key, values, formats) {
         var message;
         that.locales.some(function (locale) {
-            message = locale[(ns ? ns + sep : ns) + key] || messageForNSParts(locale, ns, sep, key);
+            message = locale[(ns ? ns + sep : '') + key] || messageForNSParts(locale, ns, sep, key);
             return message;
         });
         if (!message) {
