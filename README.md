@@ -23,6 +23,13 @@ IMF({
         alert(l("Localized value!")); // Looks up "Localized value!" in Chinese file (at "locales/zh-CN.json") and in English (at "locales/en-US.json") if not present in Chinese
         var tk = getFormatter('tablekey');
         alert(tk("Tablekey localized value!")); // Equivalent to l("tablekey.Tablekey localized value!")
+        
+        // Note that the following two sets are equivalent
+        var tk2 = getFormatter(['tablekey', 'nestedMore']);
+        alert(tk2("Tablekey localized value2"));
+        
+        var tk3 = getFormatter('tablekey.nestedMore');
+        alert(tk3("Tablekey localized value2"));
     }
 });
 ```
@@ -32,7 +39,12 @@ JSON file structure:
 ```json
 {
     "Localized value!": "Chinese translation of \"Localized value!\"",
-    "tablekey.Tablekey localized value!": "Chinese translation of \"tablekey.Tablekey localized value!\""
+    "tablekey.Tablekey localized value!": "Chinese translation of \"tablekey.Tablekey localized value!\"",
+    "tablekey": {
+        "nestedMore": {
+            "Tablekey localized value2": "Put another Chinese translation of \"tablekey.Tablekey localized value!\" here"
+        }
+    }
 }
 ```
 
@@ -42,11 +54,25 @@ OR
 {
     "Localized value!": "Chinese translation of \"Localized value!\"",
     "tablekey": {
-        "Tablekey localized value!": "Chinese translation of \"tablekey.Tablekey localized value!\""
+        "Tablekey localized value!": "Chinese translation of \"tablekey.Tablekey localized value!\"",
+        "nestedMore": {
+            "Tablekey localized value2": "Put another Chinese translation of \"tablekey.Tablekey localized value!\" here"
+        }
     }
 }
 ```
 
+OR
+
+```json
+{
+    "Localized value!": "Chinese translation of \"Localized value!\"",
+    "tablekey.Tablekey localized value!": "Chinese translation of \"tablekey.Tablekey localized value!\"",
+    "tablekey.nestedMore.Tablekey localized value2": "Put another Chinese translation of \"tablekey.Tablekey localized value!\" here"
+}
+```
+
+...etc.
 
 
 # API
