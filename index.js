@@ -27,8 +27,8 @@ function IMF (opts) {
                     opts.callback.apply(opts.callback, [that.getFormatter(opts.namespace), that.getFormatter.bind(that), locales]);
                 }
             }
-            if (opts.fallbackLanguage) {
-                that.loadLocales(opts.fallbackLanguage, function (fallbackLocale) {
+            if (opts.fallbackLanguages) {
+                that.loadLocales(opts.fallbackLanguages, function (fallbackLocale) {
                     that.fallbackLocale = fallbackLocale;
                     runCallback();
                 }, true);

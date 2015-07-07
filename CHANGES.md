@@ -1,6 +1,9 @@
+# 0.3.0
+- Rename `fallbackLanguage` to `fallbackLanguages` for accuracy and parity with `languages`
+
 # 0.2.0
 - Allow formatter function to be supplied arguments as an object
-- Add a `fallback` callback argument to the formatter function which, whenever a message cannot be found for `languages`, will be supplied a single object argument with properties, `message`, `langs`, `namespace`, `separator`, `key`, `values`, and `formats` and whose return value will be used for the return value of the formatter function. Note that `message` will contain the value for the message of the `fallbackLanguage` locale if `fallbackLanguage` (or `fallbackLocale`) had been supplied.
+- Add a `fallback` callback argument to the formatter function which, whenever a message cannot be found for `languages`, will be supplied a single object argument with properties, `message`, `langs`, `namespace`, `separator`, `key`, `values`, and `formats` and whose return value will be used for the return value of the formatter function. Note that `message` will contain the value for the message of the `fallbackLanguages` locale if `fallbackLanguage` (or `fallbackLocales`) had been supplied.
 
 # 0.1.2
 - Avoid bundling intl-messageformat dependency
