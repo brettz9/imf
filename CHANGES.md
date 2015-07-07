@@ -1,3 +1,6 @@
+# 0.4.0
+- Allow `fallback` to be a boolean instead of only a callback; will return message of the `fallbackLocale` (as may be determined by`fallbackLanguages`).
+
 # 0.3.0
 - Rename `fallbackLanguage` to `fallbackLanguages` for accuracy and parity with `languages`
 

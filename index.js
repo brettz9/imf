@@ -69,6 +69,9 @@ IMF.prototype.getFormatter = function (ns, sep) {
         }
         that.locales.some(findMessage);
         if (!message) {
+            if (fallback === true) {
+                return that.fallbackLocale && findMessage(that.fallbackLocale);
+            }
             if (fallback) {
                 return fallback({message: that.fallbackLocale && findMessage(that.fallbackLocale), langs: that.langs, namespace: ns, separator: sep, key: key, values: values, formats: formats});
             }
