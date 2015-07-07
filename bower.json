@@ -1,9 +1,10 @@
 {
   "name": "imf",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "index.js",
   "dependencies": {
-      "get-json": "1.x"
+      "get-json": "1.x",
+      "intl-messageformat": "1.x"
   },
   "ignore": ["bower_components"],
   "authors": [
