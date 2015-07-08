@@ -103,6 +103,7 @@ OR
 - `langs` - Will automatically be set (as an array of BCP 47 language tags) upon calls to `loadLocales`.
 - `locales` - Will automatically be set to an array of locale JSON objects as loaded by `loadLocales`.
 - `fallbackLocale` - Will automatically be set (as an array of locale JSON objects as loaded by `loadLocales`.
+- `fallbackLanguages`  Will automatically be set.
 
 # To-dos
 

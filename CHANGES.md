@@ -1,3 +1,7 @@
+# 0.6.0
+- Add property `fallbackLanguages` and utilize in error messages
+- Avoid setting `langs` property for fallback language (for `loadLocales` calls with `avoidSettingLocales` set to true)
+
 # 0.5.0
 - Cache Array.isArray, Allow array as ns+key argument or as separator-separated string
 

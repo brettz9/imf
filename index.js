@@ -14,6 +14,7 @@ function IMF (opts) {
     this.defaultNamespace = opts.defaultNamespace || '';
     this.defaultSeparator = opts.defaultSeparator === undefined ? '.' : opts.defaultSeparator;
     this.basePath = opts.basePath || 'locales/';
+    this.fallbackLanguages = opts.fallbackLanguages;
 
     this.localeFileResolver = opts.localeFileResolver || function (lang) {
         return this.basePath + lang + '.json';
@@ -28,7 +29,7 @@ function IMF (opts) {
                 }
             }
             if (opts.fallbackLanguages) {
-                that.loadLocales(opts.fallbackLanguages, function (fallbackLocale) {
+                that.loadLocales(that.fallbackLanguages, function (fallbackLocale) {
                     that.fallbackLocale = fallbackLocale;
                     runCallback();
                 }, true);
@@ -90,7 +91,9 @@ IMF.prototype.getFormatter = function (ns, sep) {
             if (fallback) {
                 return fallback({message: that.fallbackLocale && findMessage(that.fallbackLocale), langs: that.langs, namespace: currNs, separator: sep, key: key, values: values, formats: formats});
             }
-            throw "Message not found for locales " + that.langs + " with key " + key + ", namespace " + currNs + ", and namespace separator " + sep;
+            throw "Message not found for locales " + that.langs +
+                (that.fallbackLanguages ? " (with fallback languages " + that.fallbackLanguages + ")" : '') +
+                " with key " + key + ", namespace " + currNs + ", and namespace separator " + sep;
         }
         if (!values && !formats) {
             return message;
@@ -103,9 +106,12 @@ IMF.prototype.getFormatter = function (ns, sep) {
 IMF.prototype.loadLocales = function (langs, cb, avoidSettingLocales) {
     var that = this;
     langs = langs || navigator.language || 'en-US';
-    this.langs = Array.isArray(langs) ? langs : [langs];
+    langs = Array.isArray(langs) ? langs : [langs];
+    if (!avoidSettingLocales) {
+        this.langs = langs;
+    }
     getJSON(
-        this.langs.map(this.localeFileResolver, this),
+        langs.map(this.localeFileResolver, this),
         function () {
             var locales = Array.from(arguments);
             if (!avoidSettingLocales) {
