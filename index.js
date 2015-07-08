@@ -51,20 +51,35 @@ IMF.prototype.getFormatter = function (ns, sep) {
         });
         return (found && loc[key]) ? loc[key] : '';
     }
+    var isArray = Array.isArray;
+    
     ns = ns === undefined ? this.defaultNamespace : ns;
     sep = sep === undefined ? this.defaultSeparator : sep;
-    ns = Array.isArray(ns) ? ns.join(sep) : ns;
+    ns = isArray(ns) ? ns.join(sep) : ns;
 
     return function (key, values, formats, fallback) {
         var message;
-        if (key && typeof key === 'object') {
+        var currNs = ns;
+        if (key && !isArray(key) && typeof key === 'object') {
             values = key.values;
             formats = key.formats;
             fallback = key.fallback;
             key = key.key;
         }
+        if (isArray(key)) { // e.g., [ns1, ns2, key]
+            var newKey = key.pop();
+            currNs = key.join(sep);
+            key = newKey;
+        }
+        else {
+            var keyPos = key.indexOf(sep);
+            if (!currNs && keyPos > -1) { // e.g., 'ns1.ns2.key'
+                currNs = key.slice(0, keyPos);
+                key = key.slice(keyPos + 1);
+            }
+        }
         function findMessage (locale) {
-            message = locale[(ns ? ns + sep : '') + key] || messageForNSParts(locale, ns, sep, key);
+            message = locale[(currNs ? currNs + sep : '') + key] || messageForNSParts(locale, currNs, sep, key);
             return message;
         }
         that.locales.some(findMessage);
@@ -73,9 +88,9 @@ IMF.prototype.getFormatter = function (ns, sep) {
                 return that.fallbackLocale && findMessage(that.fallbackLocale);
             }
             if (fallback) {
-                return fallback({message: that.fallbackLocale && findMessage(that.fallbackLocale), langs: that.langs, namespace: ns, separator: sep, key: key, values: values, formats: formats});
+                return fallback({message: that.fallbackLocale && findMessage(that.fallbackLocale), langs: that.langs, namespace: currNs, separator: sep, key: key, values: values, formats: formats});
             }
-            throw "Message not found for locales " + that.langs + " with key " + key + ", namespace " + ns + ", and namespace separator " + sep;
+            throw "Message not found for locales " + that.langs + " with key " + key + ", namespace " + currNs + ", and namespace separator " + sep;
         }
         if (!values && !formats) {
             return message;

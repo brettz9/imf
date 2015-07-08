@@ -1,3 +1,6 @@
+# 0.5.0
+- Cache Array.isArray, Allow array as ns+key argument or as separator-separated string
+
 # 0.4.0
 - Allow `fallback` to be a boolean instead of only a callback; will return message of the `fallbackLocale` (as may be determined by`fallbackLanguages`).
 
