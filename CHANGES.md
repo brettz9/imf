@@ -1,3 +1,11 @@
+# 0.8.0
+- Change `fallbackLocale` property to `fallbackLocales` array. New property defaults to an empty array and is populated if `fallbackLanguages` is provided. All locales will be checked if `getFormatter` does not find a message within the `locales` property.
+- Allow `fallbackLanguages` option to add results to `fallbackLocales` property even if no `callback` or `languages` option is provided upon instantiation.
+- Supply retrieved `fallbackLocales` to be passed to the `callback` option as a fourth argument.
+- Fix `callback` to be invoked on the IMF object (allowing it to access properties such as `locales`).
+- Change default behavior of `getFormatter()` to utilize fallbacks unless the fourth `fallback` argument is explicitly set to `false`.
+- Add `langs` option so that if `locales` are set without `languages` having been provided, corresponding language codes can be provided in error messages. 
+
 # 0.7.0
 - Allow `locales` property to be set as an option at instantiation and added to by `loadLocales`.
 

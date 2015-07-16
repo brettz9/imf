@@ -21,25 +21,37 @@ function IMF (opts) {
     };
     
     this.locales = opts.locales || [];
+    this.langs = opts.langs;
+    this.fallbackLocales = opts.fallbackLocales || [];
+    
+    function loadFallbacks(cb) {
+        that.loadLocales(that.fallbackLanguages, function () {
+            var fallbackLocales = Array.from(arguments);
+            that.fallbackLocales.push.apply(that.fallbackLocales, fallbackLocales);
+            if (cb) {
+                cb(fallbackLocales);
+            }
+        }, true);
+    }
 
     if (opts.languages || opts.callback) {
         this.loadLocales(opts.languages, function () {
             var locales = Array.from(arguments);
-            function runCallback () {
+            function runCallback (fallbackLocales) {
                 if (opts.callback) {
-                    opts.callback.apply(opts.callback, [that.getFormatter(opts.namespace), that.getFormatter.bind(that), locales]);
+                    opts.callback.apply(that, [that.getFormatter(opts.namespace), that.getFormatter.bind(that), locales, fallbackLocales]);
                 }
             }
-            if (opts.fallbackLanguages) {
-                that.loadLocales(that.fallbackLanguages, function (fallbackLocale) {
-                    that.fallbackLocale = fallbackLocale;
-                    runCallback();
-                }, true);
+            if (opts.hasOwnProperty('fallbackLanguages')) {
+                loadFallbacks(runCallback);
             }
             else {
                 runCallback();
             }
         });
+    }
+    else if (opts.hasOwnProperty('fallbackLanguages')) {
+        loadFallbacks();
     }
 }
 
@@ -81,17 +93,19 @@ IMF.prototype.getFormatter = function (ns, sep) {
                 key = key.slice(keyPos + 1);
             }
         }
-        function findMessage (locale) {
-            message = locale[(currNs ? currNs + sep : '') + key] || messageForNSParts(locale, currNs, sep, key);
-            return message;
+        function findMessage (locales) {
+            return locales.some(function (locale) {
+                message = locale[(currNs ? currNs + sep : '') + key] || messageForNSParts(locale, currNs, sep, key);
+                return message;
+            });
         }
-        that.locales.some(findMessage);
+        findMessage(that.locales);
         if (!message) {
-            if (fallback === true) {
-                return that.fallbackLocale && findMessage(that.fallbackLocale);
+            if (typeof fallback === 'function') {
+                return fallback({message: that.fallbackLocales.length && findMessage(that.fallbackLocales), langs: that.langs, namespace: currNs, separator: sep, key: key, values: values, formats: formats});
             }
-            if (fallback) {
-                return fallback({message: that.fallbackLocale && findMessage(that.fallbackLocale), langs: that.langs, namespace: currNs, separator: sep, key: key, values: values, formats: formats});
+            if (fallback !== false) {
+                return that.fallbackLocales.length && findMessage(that.fallbackLocales);
             }
             throw "Message not found for locales " + that.langs +
                 (that.fallbackLanguages ? " (with fallback languages " + that.fallbackLanguages + ")" : '') +
@@ -117,9 +131,7 @@ IMF.prototype.loadLocales = function (langs, cb, avoidSettingLocales) {
         function () {
             var locales = Array.from(arguments);
             if (!avoidSettingLocales) {
-                locales.forEach(function (locale) {
-                    that.locales.push(locale);
-                });
+                that.locales.push.apply(that.locales, locales);
             }
             if (cb) {
                 cb.apply(that, locales);
