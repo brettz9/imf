@@ -81,6 +81,7 @@ OR
 
 - *Constructor(options)* - A constructor (which can be used without `new`) to be supplied an options object with the following optional properties:
   - `languages` - Array of BCP 47 language tags in order of preference. Can also be a string for a single tag (e.g., "en-US"), or, if not supplied, will default to `navigator.language` or `en-US`. Will be used as the second argument to the `IntlMessageFormat` constructor.
+  - `locales` - Array of locale objects (see locale JSON file structure above). Will set the `locales` property if present.
   - `fallbackLanguages` - Allows a language or set of languages in the same format as `languages`. Its message will be supplied to the `fallback` callback argument of the formatter function (or used in a return value if `fallback` is `true`) if no message is found for `languages`.
   - `namespace` - Initial namespace for the formatter function supplied as the first argument to `callback`. Defaults to value of `defaultNamespace`. Namespaces may be expressed as an array of namespace parts or as a string. Will be used in conjunction with a separator. See the example above for an illustration of the two allowable JSON file format structures. Note that namespace parts can be indefinitely nested whether as subobjects or as additional separator-separated strings.
   - `defaultNamespace` - Used when a namespace is not provided to `getFormatter`. Defaults to empty string.
@@ -90,7 +91,7 @@ OR
   - `callback` - Supplied with the following arguments upon loading of locales:
     1. A formatter function based on `namespace` (or `defaultNamesapce` or the empty string if none supplied)
     1. A generic formatter building function (see `getFormatter` method)
-    1. Locale files as JSON objects
+    1. Retrieved locale files as JSON objects; to get all locale files, use `this.locales` from within your callback.
 - `getFormatter(ns, sep)` - A generic formatter building method; can be supplied an optional namespace and optional separator, defaulting otherwise to `defaultNamespace` and `defaultSeparator`, respectively. The namespace can either be an array of namespace parts or a string with the separator already applied. The namespace (along with separator interpolated between and after) will be prepended to the key supplied by the user when the formatter function is called. Will be automatically invoked (and the result supplied to `callback`) if `callback` or `languages` is supplied upon instantiation. The returned formatter function can be called with the following arguments (supplied in order or with a single object with properties of the given name):
   1. `key` - Lookup key for a `IntlMessageFormat`-formatted message in the locales file (will be prepended as per the above by any supplied namespaces and separators). If no `values` or `formats` objects are supplied, the literal value from the locales file will be returned without any `IntlMessageFormat` processing. If supplied as an array, the last item will be treated as the key whereas the prior portions will be treated as a namespace override. Likewise if a separator-separated string is supplied.
   1. `values` - Optional values object (same as accepted by `IntlMessageFormat.format()`)
@@ -101,7 +102,7 @@ OR
 ## Properties
 
 - `langs` - Will automatically be set (as an array of BCP 47 language tags) upon calls to `loadLocales`.
-- `locales` - Will automatically be set to an array of locale JSON objects as loaded by `loadLocales`.
+- `locales` - Will automatically be set to an array. If `loadLocales` is run (including by the use of `languages` or `callback` options arguments to the constructor), the retrieved locale JSON objects will be added to this array. This property can also be set as an array of (pre-loaded) locales at instantiation. If supplied after instantiation, these will replace any already set.
 - `fallbackLocale` - Will automatically be set (as an array of locale JSON objects as loaded by `loadLocales`.
 - `fallbackLanguages`  Will automatically be set.
 

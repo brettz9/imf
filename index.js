@@ -20,6 +20,8 @@ function IMF (opts) {
         return this.basePath + lang + '.json';
     };
     
+    this.locales = opts.locales || [];
+
     if (opts.languages || opts.callback) {
         this.loadLocales(opts.languages, function () {
             var locales = Array.from(arguments);
@@ -115,7 +117,9 @@ IMF.prototype.loadLocales = function (langs, cb, avoidSettingLocales) {
         function () {
             var locales = Array.from(arguments);
             if (!avoidSettingLocales) {
-                that.locales = locales;
+                locales.forEach(function (locale) {
+                    that.locales.push(locale);
+                });
             }
             if (cb) {
                 cb.apply(that, locales);

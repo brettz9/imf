@@ -1,3 +1,6 @@
+# 0.7.0
+- Allow `locales` property to be set as an option at instantiation and added to by `loadLocales`.
+
 # 0.6.0
 - Add property `fallbackLanguages` and utilize in error messages
 - Avoid setting `langs` property for fallback language (for `loadLocales` calls with `avoidSettingLocales` set to true)
