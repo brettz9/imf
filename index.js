@@ -8,7 +8,7 @@ function IMF (opts) {
         return new IMF(opts);
     }
     opts = opts || {};
-    
+
     var that = this;
 
     this.defaultNamespace = opts.defaultNamespace || '';
@@ -19,11 +19,11 @@ function IMF (opts) {
     this.localeFileResolver = opts.localeFileResolver || function (lang) {
         return this.basePath + lang + '.json';
     };
-    
+
     this.locales = opts.locales || [];
     this.langs = opts.langs;
     this.fallbackLocales = opts.fallbackLocales || [];
-    
+
     function loadFallbacks(cb) {
         that.loadLocales(that.fallbackLanguages, function () {
             var fallbackLocales = Array.from(arguments);
@@ -67,7 +67,7 @@ IMF.prototype.getFormatter = function (ns, sep) {
         return (found && loc[key]) ? loc[key] : '';
     }
     var isArray = Array.isArray;
-    
+
     ns = ns === undefined ? this.defaultNamespace : ns;
     sep = sep === undefined ? this.defaultSeparator : sep;
     ns = isArray(ns) ? ns.join(sep) : ns;
@@ -94,10 +94,11 @@ IMF.prototype.getFormatter = function (ns, sep) {
             }
         }
         function findMessage (locales) {
-            return locales.some(function (locale) {
+            locales.some(function (locale) {
                 message = locale[(currNs ? currNs + sep : '') + key] || messageForNSParts(locale, currNs, sep, key);
                 return message;
             });
+            return message;
         }
         findMessage(that.locales);
         if (!message) {
