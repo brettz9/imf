@@ -16,14 +16,14 @@ IMF({
         alert(l("Localized value!")); // Looks up "Localized value!" in Chinese file (at "locales/zh-CN.json") and in English (at "locales/en.json") if not present in Chinese
         var tk = getFormatter('tablekey');
         alert(tk("Tablekey localized value!")); // Equivalent to l("tablekey.Tablekey localized value!")
-        
+
         var tk2 = getFormatter(['tablekey', 'nestedMore']);
         alert(tk2("Tablekey localized value2"));
-        
+
         var tk3 = getFormatter('tablekey.nestedMore');
-        
+
         alert(tk3("Tablekey localized value2"));
-        
+
         IMF({
             languages: 'zh-CN',
             fallbackLanguages: 'en-US',
