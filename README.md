@@ -4,14 +4,14 @@ A convenience wrapper for [intl-messageformat](https://github.com/yahoo/intl-mes
 
 # Installation
 
-`bower install imf`
+`npm install imf`
 
 # Usage
 
 ```html
-<script src="bower_components/intl-messageformat/dist/intl-messageformat-with-locales.min.js"></script>
-<script src="bower_components/get-json/index.js"></script>
-<script src="bower_components/imf/index.js"></script>
+<script src="node_modules/intl-messageformat/dist/intl-messageformat-with-locales.min.js"></script>
+<script src="node_modules/simple-get-json/index.js"></script>
+<script src="node_modules/imf/index.js"></script>
 ```
 
 # Example
@@ -21,14 +21,14 @@ IMF({
     languages: ['zh-CN', 'en-US'],
     callback: function (l, getFormatter /*, enUSLocale, esLocale, ptLocale, zhCNLocale*/) {
         alert(l("Localized value!")); // Looks up "Localized value!" in Chinese file (at "locales/zh-CN.json") and in English (at "locales/en-US.json") if not present in Chinese
-        var tk = getFormatter('tablekey');
+        const tk = getFormatter('tablekey');
         alert(tk("Tablekey localized value!")); // Equivalent to l("tablekey.Tablekey localized value!")
 
         // Note that the following two sets are equivalent
-        var tk2 = getFormatter(['tablekey', 'nestedMore']);
+        const tk2 = getFormatter(['tablekey', 'nestedMore']);
         alert(tk2("Tablekey localized value2"));
 
-        var tk3 = getFormatter('tablekey.nestedMore');
+        const tk3 = getFormatter('tablekey.nestedMore');
         alert(tk3("Tablekey localized value2"));
     }
 });

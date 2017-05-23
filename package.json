@@ -1,0 +1,32 @@
+{
+  "name": "imf",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author":"Brett Zamir",
+  "contributors": [],
+  "dependencies": {
+      "simple-get-json": "1.1.0",
+      "intl-messageformat": "1.3.0"
+  },
+  "devDependencies": {
+      "eslint": "3.19.0",
+      "eslint-config-standard": "10.2.1",
+      "eslint-plugin-compat": "1.0.2",
+      "eslint-plugin-import": "2.2.0",
+      "eslint-plugin-node": "4.2.2",
+      "eslint-plugin-promise": "3.5.0",
+      "eslint-plugin-standard": "3.0.1"
+  },
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/brettz9/imf"
+  },
+  "description": "A convenience wrapper for Yahoo's intl-messageformat localization library",
+  "keywords": [
+    "l10n"
+  ],
+  "license": "MIT",
+  "bugs": "https://github.com/brettz9/imf/issues",
+  "engines": {},
+  "homepage": "https://github.com/brettz9/imf"
+}
