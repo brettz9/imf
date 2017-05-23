@@ -1,3 +1,11 @@
+# 1.0.2
+
+-   Properly ensure publishing current tagged version
+
+# 1.0.0
+
+-   Switch to npm over bower
+
 # 0.9.0
 
 -   Critical fix to message finding
