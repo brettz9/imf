@@ -1,6 +1,6 @@
 # 2.0.0
 
-- Refactoring: Switch to ES6 Modules
+- Refactoring: Switch to ES6 Modules; arrow functions
 
 # 1.0.2
 

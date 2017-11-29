@@ -5,11 +5,12 @@
     <title>Demo</title>
     <script src="../node_modules/intl-messageformat/dist/intl-messageformat-with-locales.min.js"></script>
     <script src="../node_modules/simple-get-json/index.js"></script>
-    <script src="../index.js"></script>
 </head>
 <body>
 
-<script>
+<script type="module">
+
+import IMF from '../index.js';
 const write = (msg) => {
     document.body.append(
         msg,
