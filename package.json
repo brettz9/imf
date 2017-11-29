@@ -5,7 +5,7 @@
   "author":"Brett Zamir",
   "contributors": [],
   "dependencies": {
-      "simple-get-json": "1.1.0",
+      "simple-get-json": "2.0.0",
       "intl-messageformat": "2.2.0"
   },
   "devDependencies": {

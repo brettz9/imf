@@ -4,17 +4,15 @@
     <meta charset="utf-8" />
     <title>Demo</title>
     <script src="../node_modules/intl-messageformat/dist/intl-messageformat-with-locales.min.js"></script>
-    <script src="../node_modules/simple-get-json/index.js"></script>
 </head>
 <body>
 
 <script type="module">
 
 import IMF from '../index.js';
-const write = (msg) => {
+const write = (...msgs) => {
     document.body.append(
-        msg,
-        ...Array.from({length: 3}, () => document.createElement('br'))
+        ...msgs, ...Array.from({length: 3}, () => document.createElement('br'))
     );
 };
 IMF({

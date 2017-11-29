@@ -1,4 +1,6 @@
-/* globals getJSON, IntlMessageFormat */
+/* globals IntlMessageFormat */
+
+import getJSON from './node_modules/simple-get-json/index-es2017.js';
 
 function IMFClass (opts) {
     if (!(this instanceof IMFClass)) {
