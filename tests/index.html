@@ -3,33 +3,39 @@
 <head>
     <meta charset="utf-8" />
     <title>Demo</title>
-    <script src="../bower_components/intl-messageformat/dist/intl-messageformat-with-locales.min.js"></script>
-    <script src="../bower_components/get-json/index.js"></script>
+    <script src="../node_modules/intl-messageformat/dist/intl-messageformat-with-locales.min.js"></script>
+    <script src="../node_modules/simple-get-json/index.js"></script>
     <script src="../index.js"></script>
 </head>
 <body>
 
 <script>
+const write = (msg) => {
+    document.body.append(
+        msg,
+        ...Array.from({length: 3}, () => document.createElement('br'))
+    );
+};
 IMF({
     languages: ['zh-CN', 'en-US'],
     callback: function (l, getFormatter /*, enLocale, esLocale, ptLocale, zhCNLocale*/) {
-        alert(l("Localized value!")); // Looks up "Localized value!" in Chinese file (at "locales/zh-CN.json") and in English (at "locales/en.json") if not present in Chinese
+        write(l("Localized value!")); // Looks up "Localized value!" in Chinese file (at "locales/zh-CN.json") and in English (at "locales/en.json") if not present in Chinese
         var tk = getFormatter('tablekey');
-        alert(tk("Tablekey localized value!")); // Equivalent to l("tablekey.Tablekey localized value!")
+        write(tk("Tablekey localized value!")); // Equivalent to l("tablekey.Tablekey localized value!")
 
         var tk2 = getFormatter(['tablekey', 'nestedMore']);
-        alert(tk2("Tablekey localized value2"));
+        write(tk2("Tablekey localized value2"));
 
         var tk3 = getFormatter('tablekey.nestedMore');
 
-        alert(tk3("Tablekey localized value2"));
+        write(tk3("Tablekey localized value2"));
 
         IMF({
             languages: 'zh-CN',
             fallbackLanguages: 'en-US',
             callback: function (l, getFormatter) {
                 l({key: "onlyInEnglish", fallback: function (res) {
-                    alert(res.message);
+                    write(res.message);
                 }});
             }
         });
