@@ -69,8 +69,7 @@ IMFClass.prototype.getFormatter = function (ns, sep) {
     sep = sep === undefined ? this.defaultSeparator : sep;
     ns = isArray(ns) ? ns.join(sep) : ns;
 
-    const that = this;
-    return function (key, values, formats, fallback) {
+    return (key, values, formats, fallback) => {
         let message;
         let currNs = ns;
         if (key && !isArray(key) && typeof key === 'object') {
@@ -97,18 +96,26 @@ IMFClass.prototype.getFormatter = function (ns, sep) {
             });
             return message;
         }
-        findMessage(that.locales);
+        findMessage(this.locales);
         if (!message) {
             if (typeof fallback === 'function') {
-                return fallback({message: that.fallbackLocales.length && findMessage(that.fallbackLocales), langs: that.langs, namespace: currNs, separator: sep, key: key, values: values, formats: formats});
+                return fallback({
+                    message: this.fallbackLocales.length && findMessage(this.fallbackLocales),
+                    langs: this.langs,
+                    namespace: currNs,
+                    separator: sep,
+                    key,
+                    values,
+                    formats
+                });
             }
             if (fallback !== false) {
-                return that.fallbackLocales.length && findMessage(that.fallbackLocales);
+                return this.fallbackLocales.length && findMessage(this.fallbackLocales);
             }
             throw new Error(
-                'Message not found for locales ' + that.langs +
-                (that.fallbackLanguages
-                    ? ' (with fallback languages ' + that.fallbackLanguages + ')'
+                'Message not found for locales ' + this.langs +
+                (this.fallbackLanguages
+                    ? ' (with fallback languages ' + this.fallbackLanguages + ')'
                     : ''
                 ) +
                 ' with key ' + key + ', namespace ' + currNs +
@@ -118,7 +125,7 @@ IMFClass.prototype.getFormatter = function (ns, sep) {
         if (!values && !formats) {
             return message;
         }
-        const msg = new IntlMessageFormat(message, that.langs, formats);
+        const msg = new IntlMessageFormat(message, this.langs, formats);
         return msg.format(values);
     };
 };
