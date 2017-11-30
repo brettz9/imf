@@ -2,13 +2,24 @@
   "name": "imf",
   "version": "2.0.0",
   "main": "index.js",
+  "module": "index-es6.js",
   "author":"Brett Zamir",
   "contributors": [],
+  "scripts": {
+    "eslint": "eslint *.js && eslint tests/*.js",
+    "build": "rollup -c",
+    "test": "npm run eslint && npm run build && npm run test-build && node tests/index-node",
+    "browser-test": "npm run eslint && npm run build && npm start tests/",
+    "test-build": "rollup -c rollup.config.test.js"
+  },
   "dependencies": {
-      "simple-get-json": "2.0.0",
+      "simple-get-json": "3.0.3",
       "intl-messageformat": "2.2.0"
   },
   "devDependencies": {
+      "babel-core": "^6.26.0",
+      "babel-env": "^2.4.1",
+      "babel-plugin-external-helpers": "^6.22.0",
       "eslint": "4.12.0",
       "eslint-config-standard": "10.2.1",
       "eslint-plugin-compat": "2.1.0",
@@ -17,7 +28,9 @@
       "eslint-plugin-promise": "3.6.0",
       "eslint-plugin-standard": "3.0.1",
       "node-static": "0.7.10",
-      "opn": "5.1.0"
+      "opn": "5.1.0",
+      "rollup": "0.52.0",
+      "rollup-plugin-babel": "^3.0.2"
   },
   "repository": {
       "type": "git",

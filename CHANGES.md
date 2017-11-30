@@ -1,6 +1,7 @@
 # 2.0.0
 
-- Refactoring: Switch to ES6 Modules; arrow functions
+- Refactoring: Switch to ES6 Modules, arrow functions, etc. in source and tests
+- Node support
 
 # 1.0.2
 

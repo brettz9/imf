@@ -6,12 +6,24 @@ A convenience wrapper for [intl-messageformat](https://github.com/yahoo/intl-mes
 
 `npm install imf`
 
-# Usage
+# Usage (Browser)
 
 ```html
 <script src="node_modules/intl-messageformat/dist/intl-messageformat-with-locales.min.js"></script>
-<script src="node_modules/simple-get-json/index.js"></script>
 <script src="node_modules/imf/index.js"></script>
+```
+
+or:
+
+```js
+import IMF from './node_modules/imf/index-es6.js';
+
+```
+
+# Usage (Node)
+
+```js
+const IMF = require('imf');
 ```
 
 # Example
