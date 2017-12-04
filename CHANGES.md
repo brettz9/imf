@@ -1,7 +1,13 @@
 # 2.0.0
 
 - Refactoring: Switch to ES6 Modules, arrow functions, etc. in source and tests
-- Node support
+- npm: Add `browser` and `module` in `package.json` (and change `main`)
+- Build: Node support
+- Build: Have ES6 polyglot file support Node as well as browser (can rollup
+    non-polyglot now as ES for browser without extra polyfill but have Rollup
+    include `IntlMessageFormat` polyfill in `main` and `browser` builds in
+    case needed in browser too (can still make a build based off `index-es6.js`
+    without it)
 
 # 1.0.2
 

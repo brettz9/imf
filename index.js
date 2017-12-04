@@ -1,54 +1,25 @@
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
-	(global.imf = factory());
+	(global.IMF = factory());
 }(this, (function () { 'use strict';
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-  return typeof obj;
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-};
+function __async(g) {
+  return new Promise(function (s, j) {
+    function c(a, x) {
+      try {
+        var r = g[x ? "throw" : "next"](a);
+      } catch (e) {
+        j(e);return;
+      }r.done ? s(r.value) : Promise.resolve(r.value).then(c, d);
+    }function d(e) {
+      c(e, 1);
+    }c();
+  });
+}
 
-
-
-
-
-
-
-
-
-var asyncToGenerator = function (fn) {
-  return function () {
-    var gen = fn.apply(this, arguments);
-    return new Promise(function (resolve, reject) {
-      function step(key, arg) {
-        try {
-          var info = gen[key](arg);
-          var value = info.value;
-        } catch (error) {
-          reject(error);
-          return;
-        }
-
-        if (info.done) {
-          resolve(value);
-        } else {
-          return Promise.resolve(value).then(function (value) {
-            step("next", value);
-          }, function (err) {
-            step("throw", err);
-          });
-        }
-      }
-
-      return step("next");
-    });
-  };
-};
-
-var getJSON$1 = (function () {
-    var _ref = asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(jsonURL, cb, errBack) {
+function getJSON$1(jsonURL, cb, errBack) {
+    return __async( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
         var arrResult, result;
         return regeneratorRuntime.wrap(function _callee$(_context) {
             while (1) {
@@ -63,7 +34,7 @@ var getJSON$1 = (function () {
 
                         _context.next = 4;
                         return Promise.all(jsonURL.map(function (url) {
-                            return getJSON(url);
+                            return getJSON$1(url);
                         }));
 
                     case 4:
@@ -72,7 +43,7 @@ var getJSON$1 = (function () {
                         if (cb) {
                             cb.apply(null, arrResult);
                         }
-                        return _context.abrupt('return', arrResult);
+                        return _context.abrupt("return", arrResult);
 
                     case 7:
                         _context.next = 9;
@@ -82,41 +53,35 @@ var getJSON$1 = (function () {
 
                     case 9:
                         result = _context.sent;
-                        return _context.abrupt('return', typeof cb === 'function' ? cb(result) : result);
+                        return _context.abrupt("return", typeof cb === 'function' ? cb(result) : result);
 
                     case 13:
                         _context.prev = 13;
-                        _context.t0 = _context['catch'](0);
+                        _context.t0 = _context["catch"](0);
 
-                        _context.t0.message += ' (File: ' + jsonURL + ')';
+                        _context.t0.message += " (File: " + jsonURL + ")";
 
                         if (!errBack) {
                             _context.next = 18;
                             break;
                         }
 
-                        return _context.abrupt('return', errBack(_context.t0, jsonURL));
+                        return _context.abrupt("return", errBack(_context.t0, jsonURL));
 
                     case 18:
                         throw _context.t0;
 
                     case 19:
-                    case 'end':
+                    case "end":
                         return _context.stop();
                 }
             }
         }, _callee, this, [[0, 13]]);
-    }));
-
-    function getJSON(_x, _x2, _x3) {
-        return _ref.apply(this, arguments);
-    }
-
-    return getJSON;
-})();
+    })());
+}
 
 /* globals global, require */
-if (typeof module !== 'undefined') {
+if (typeof fetch === 'undefined') {
     global.fetch = function (jsonURL) {
         return new Promise(function (resolve, reject) {
             var _require = require('local-xmlhttprequest'),
@@ -147,10 +112,13 @@ if (typeof module !== 'undefined') {
     };
 }
 
-/* globals IntlMessageFormat, require */
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  return typeof obj;
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+};
 
-var IntlMsgFormat = typeof module !== 'undefined' ? require('intl-messageformat') : IntlMessageFormat;
-
+/* globals IntlMessageFormat */
 function IMFClass(opts) {
     var _this = this,
         _arguments = arguments;
@@ -274,7 +242,7 @@ IMFClass.prototype.getFormatter = function (ns, sep) {
         if (!values && !formats) {
             return message;
         }
-        var msg = new IntlMsgFormat(message, _this2.langs, formats);
+        var msg = new IntlMessageFormat(message, _this2.langs, formats);
         return msg.format(values);
     };
 };

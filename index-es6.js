@@ -1,8 +1,5 @@
-/* globals IntlMessageFormat, require */
-
-import getJSON from './node_modules/simple-get-json/index-es2017-node.js'; // Node version works on browser, but not vice versa
-
-const IntlMsgFormat = typeof module !== 'undefined' ? require('intl-messageformat') : IntlMessageFormat;
+/* globals IntlMessageFormat */
+import getJSON from 'simple-get-json';
 
 function IMFClass (opts) {
     if (!(this instanceof IMFClass)) {
@@ -127,7 +124,7 @@ IMFClass.prototype.getFormatter = function (ns, sep) {
         if (!values && !formats) {
             return message;
         }
-        const msg = new IntlMsgFormat(message, this.langs, formats);
+        const msg = new IntlMessageFormat(message, this.langs, formats);
         return msg.format(values);
     };
 };

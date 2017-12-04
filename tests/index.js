@@ -1,4 +1,4 @@
-import IMF from '../index-es6.js';
+import IMF from '../index-es6-polyglot.js';
 
 const write = (...msgs) => {
     if (typeof document !== 'undefined') {

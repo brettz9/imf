@@ -1,2 +1,5 @@
 /index.js
 /tests/index-node.js
+/tests/index-browser.js
+index-polyglot.js
+index.js
