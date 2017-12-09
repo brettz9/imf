@@ -1,3 +1,10 @@
+# 2.1.0
+
+- npm: Bump simple-get-json version
+- npm: Update devDeps
+- npm: Switch to babel-preset-env
+- Build: Add Yarn lock
+
 # 2.0.0
 
 - Refactoring: Switch to ES6 Modules, arrow functions, etc. in source and tests
