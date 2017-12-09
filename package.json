@@ -1,6 +1,6 @@
 {
   "name": "imf",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "browser": "index.js",
   "main": "index-polyglot.js",
   "module": "index-es6-polyglot.js",
@@ -14,7 +14,7 @@
     "test-build": "rollup -c rollup.config.test.js"
   },
   "dependencies": {
-      "simple-get-json": "3.2.0",
+      "simple-get-json": "3.2.1",
       "intl-messageformat": "2.2.0"
   },
   "devDependencies": {

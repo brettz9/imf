@@ -1,3 +1,9 @@
+# 2.1.1
+
+- Fix `.npmignore`
+- License: Rename LICENSE to LICENSE-MIT.txt
+- npm: Update dep
+
 # 2.1.0
 
 - npm: Bump simple-get-json version
