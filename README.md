@@ -233,6 +233,8 @@ OR
 
 # To-dos
 
+1.  Add utility for auto-setting `document.title`, `html.lang`, and
+    `html.dir`
 1.  Add logic to recover if file like `en-US.json` is not
     present but `en.json` is (might enhance `getJSON`
     errBack to capture thrown object with file property
