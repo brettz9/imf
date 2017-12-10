@@ -17,7 +17,6 @@ or:
 
 ```js
 import IMF from './node_modules/imf/index-es6.js';
-
 ```
 
 # Usage (Node)
