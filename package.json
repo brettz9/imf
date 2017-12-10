@@ -1,8 +1,8 @@
 {
     "name": "imf",
     "version": "2.1.1",
-    "browser": "index.js",
-    "main": "index-polyglot.js",
+    "browser": "dist/index.js",
+    "main": "dist/index-polyglot.js",
     "module": "index-es6-polyglot.js",
     "author": "Brett Zamir",
     "contributors": [],

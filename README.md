@@ -16,7 +16,7 @@ A convenience wrapper for [intl-messageformat](https://github.com/yahoo/intl-mes
 or:
 
 ```js
-import IMF from './node_modules/imf/index-es6.js';
+import IMF from './node_modules/imf/dist/index-es6.js';
 ```
 
 # Usage (Node)
