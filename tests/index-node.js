@@ -1977,7 +1977,6 @@ if (typeof fetch === 'undefined') {
     };
 }
 
-/* globals IntlMessageFormat */
 function IMFClass (opts) {
     if (!(this instanceof IMFClass)) {
         return new IMFClass(opts);
@@ -2101,7 +2100,7 @@ IMFClass.prototype.getFormatter = function (ns, sep) {
         if (!values && !formats) {
             return message;
         }
-        const msg = new IntlMessageFormat(message, this.langs, formats);
+        const msg = new MessageFormat(message, this.langs, formats);
         return msg.format(values);
     };
 };

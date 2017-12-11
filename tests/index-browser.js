@@ -1,3 +1,9 @@
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(factory());
+}(this, (function () { 'use strict';
+
 /*
 Copyright (c) 2014, Yahoo! Inc. All rights reserved.
 Copyrights licensed under the New BSD License.
@@ -1971,7 +1977,6 @@ if (typeof fetch === 'undefined') {
     };
 }
 
-/* globals IntlMessageFormat */
 function IMFClass (opts) {
     if (!(this instanceof IMFClass)) {
         return new IMFClass(opts);
@@ -2095,7 +2100,7 @@ IMFClass.prototype.getFormatter = function (ns, sep) {
         if (!values && !formats) {
             return message;
         }
-        const msg = new IntlMessageFormat(message, this.langs, formats);
+        const msg = new MessageFormat(message, this.langs, formats);
         return msg.format(values);
     };
 };
@@ -2161,3 +2166,5 @@ IMFClass({
         });
     }
 });
+
+})));

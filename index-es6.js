@@ -1,4 +1,4 @@
-/* globals IntlMessageFormat */
+import IntlMessageFormat from 'intl-messageformat';
 import getJSON from 'simple-get-json';
 
 function IMFClass (opts) {

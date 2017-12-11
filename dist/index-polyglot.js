@@ -2107,7 +2107,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
 };
 
-/* globals IntlMessageFormat */
 function IMFClass(opts) {
     var _this = this,
         _arguments = arguments;
@@ -2231,7 +2230,7 @@ IMFClass.prototype.getFormatter = function (ns, sep) {
         if (!values && !formats) {
             return message;
         }
-        var msg = new IntlMessageFormat(message, _this2.langs, formats);
+        var msg = new MessageFormat(message, _this2.langs, formats);
         return msg.format(values);
     };
 };

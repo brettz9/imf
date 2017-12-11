@@ -22,7 +22,7 @@ export default [{
     input: 'tests/index.js',
     output: {
         file: 'tests/index-browser.js',
-        format: 'es',
+        format: 'umd',
         name: 'testImf'
     },
     plugins: [
