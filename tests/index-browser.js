@@ -1977,6 +1977,8 @@ if (typeof fetch === 'undefined') {
     };
 }
 
+// If strawman approved, this would only be
+//    needed in the Node polyfill
 function IMFClass (opts) {
     if (!(this instanceof IMFClass)) {
         return new IMFClass(opts);

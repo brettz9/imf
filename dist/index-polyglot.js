@@ -2107,6 +2107,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
 };
 
+// If strawman approved, this would only be
+//    needed in the Node polyfill
 function IMFClass(opts) {
     var _this = this,
         _arguments = arguments;

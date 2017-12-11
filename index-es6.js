@@ -1,3 +1,5 @@
+// If strawman approved, this would only be
+//    needed in the Node polyfill
 import IntlMessageFormat from 'intl-messageformat';
 import getJSON from 'simple-get-json';
 
