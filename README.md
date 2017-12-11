@@ -234,6 +234,14 @@ IMF({
 
 1.  Add utility for auto-setting `document.title`, `html.lang`, and
     `html.dir`
+1.  Some code like this to import Yahoo's locale files (plural rules
+    and sublanguages) (or if necessary calling
+    `IntlMessageFormat.__addLocaleData()` ourselves). Won't be necessary
+    for browser in future if implemented
+```js
+const text = (await fetch('path/to/Yahoo/IntlMessageFormat/dist/locale-data/XX.js')).text();
+console.log(text);
+```
 1.  Support JSONP (allowing for multi-line template strings or other
     deviants from non-JSON syntax like single quotes).
 1.  Add logic to recover if file like `en-US.json` is not
