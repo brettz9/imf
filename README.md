@@ -27,25 +27,7 @@ const IMF = require('imf');
 
 # Example
 
-```js
-IMF({
-    languages: ['zh-CN', 'en-US'],
-    callback: function (l, getFormatter /*, enUSLocale, esLocale, ptLocale, zhCNLocale*/) {
-        alert(l("Localized value!")); // Looks up "Localized value!" in Chinese file (at "locales/zh-CN.json") and in English (at "locales/en-US.json") if not present in Chinese
-        const tk = getFormatter('tablekey');
-        alert(tk("Tablekey localized value!")); // Equivalent to l("tablekey.Tablekey localized value!")
-
-        // Note that the following two sets are equivalent
-        const tk2 = getFormatter(['tablekey', 'nestedMore']);
-        alert(tk2("Tablekey localized value2"));
-
-        const tk3 = getFormatter('tablekey.nestedMore');
-        alert(tk3("Tablekey localized value2"));
-    }
-});
-```
-
-JSON file structure:
+For the following JSON file structure...
 
 ```json
 {
@@ -83,7 +65,25 @@ OR
 }
 ```
 
-...etc.
+...etc., one could do:
+
+```js
+IMF({
+    languages: ['zh-CN', 'en-US'],
+    callback: function (l, getFormatter /*, enUSLocale, esLocale, ptLocale, zhCNLocale*/) {
+        alert(l("Localized value!")); // Looks up "Localized value!" in Chinese file (at "locales/zh-CN.json") and in English (at "locales/en-US.json") if not present in Chinese
+        const tk = getFormatter('tablekey');
+        alert(tk("Tablekey localized value!")); // Equivalent to l("tablekey.Tablekey localized value!")
+
+        // Note that the following two sets are equivalent
+        const tk2 = getFormatter(['tablekey', 'nestedMore']);
+        alert(tk2("Tablekey localized value2"));
+
+        const tk3 = getFormatter('tablekey.nestedMore');
+        alert(tk3("Tablekey localized value2"));
+    }
+});
+```
 
 # API
 
@@ -234,6 +234,8 @@ OR
 
 1.  Add utility for auto-setting `document.title`, `html.lang`, and
     `html.dir`
+1.  Support JSONP (allowing for multi-line template strings or other
+    deviants from non-JSON syntax like single quotes).
 1.  Add logic to recover if file like `en-US.json` is not
     present but `en.json` is (might enhance `getJSON`
     errBack to capture thrown object with file property
