@@ -239,8 +239,9 @@ IMF({
 ## To-dos
 
 1.  Add utility for auto-setting `document.title` (though possibly with own lang/dir),
-    `html.lang`, and `html.dir` (auto-detect latter using <https://github.com/shadiabuhilal/rtl-detect>);
-    also filed <https://github.com/tc39/ecma402/issues/205>
+    `html.lang`, and `html.dir` (auto-detect latter using <https://github.com/shadiabuhilal/rtl-detect>; also 3/4 scripts that could use
+    vertical writing modes); also filed <https://github.com/tc39/ecma402/issues/205>
+    for auto-detecting this
 1.  Support JSONP (allowing for multi-line template strings or other
     deviants from non-JSON syntax like single quotes).
 1.  Support localStorage (or indexedDB) for locales
