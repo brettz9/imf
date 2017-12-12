@@ -1,6 +1,15 @@
+/* eslint-env node */
 import babel from 'rollup-plugin-babel';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import async from 'rollup-plugin-async'; // simple-get-json
+
+const fs = require('fs');
+const path = require('path');
+const dir = './node_modules/intl-messageformat/dist/locale-data';
+const dirPath = path.join(__dirname, dir);
+// Todo: Would be faster to Promise.all on concatenation of all
+const locales = JSON.stringify(fs.readdirSync(dirPath).map((f) => f.replace(/.js$/, '')));
+fs.writeFileSync('./locales.js', `export default ${locales}`);
 
 export default [{
     input: 'index-es6.js',

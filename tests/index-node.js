@@ -1929,6 +1929,27 @@ MessageFormat.defaultLocale = 'en';
 
 function __async(g){return new Promise(function(s,j){function c(a,x){try{var r=g[x?"throw":"next"](a);}catch(e){j(e);return}r.done?s(r.value):Promise.resolve(r.value).then(c,d);}function d(e){c(e,1);}c();})}
 
+var locales = ["af","agq","ak","am","ar","as","asa","ast","az","bas","be","bem","bez","bg","bh","bm","bn","bo","br","brx","bs","ca","ce","cgg","chr","ckb","cs","cu","cy","da","dav","de","dje","dsb","dua","dv","dyo","dz","ebu","ee","el","en","eo","es","et","eu","ewo","fa","ff","fi","fil","fo","fr","fur","fy","ga","gd","gl","gsw","gu","guw","guz","gv","ha","haw","he","hi","hr","hsb","hu","hy","id","ig","ii","in","is","it","iu","iw","ja","jbo","jgo","ji","jmc","jv","jw","ka","kab","kaj","kam","kcg","kde","kea","khq","ki","kk","kkj","kl","kln","km","kn","ko","kok","ks","ksb","ksf","ksh","ku","kw","ky","lag","lb","lg","lkt","ln","lo","lrc","lt","lu","luo","luy","lv","mas","mer","mfe","mg","mgh","mgo","mk","ml","mn","mo","mr","ms","mt","mua","my","mzn","nah","naq","nb","nd","ne","nl","nmg","nn","nnh","no","nqo","nr","nso","nus","ny","nyn","om","or","os","pa","pap","pl","prg","ps","pt","qu","rm","rn","ro","rof","ru","rw","rwk","sah","saq","sbp","sdh","se","seh","ses","sg","sh","shi","si","sk","sl","sma","smi","smj","smn","sms","sn","so","sq","sr","ss","ssy","st","sv","sw","syr","ta","te","teo","th","ti","tig","tk","tl","tn","to","tr","ts","twq","tzm","ug","uk","ur","uz","vai","ve","vi","vo","vun","wa","wae","wo","xh","xog","yav","yi","yo","zgh","zh","zu"];
+
+/* globals global */
+// Needed to allow our code below to work
+const glob = typeof window !== 'undefined' ? window : global;
+glob.IntlMessageFormat = MessageFormat;
+
+// https://github.com/rollup/rollup/wiki/Troubleshooting#avoiding-eval
+const rollupSaferEval = eval; // eslint-disable-line no-eval
+
+function getLocalizedIntlMessageFormat () {return __async(function*(){
+    yield Promise.all(locales.map((locale) => __async(function*(){
+        const req = yield fetch(`/node_modules/intl-messageformat/dist/locale-data/${locale}.js`);
+        const jsText = yield req.text();
+        rollupSaferEval(
+            jsText
+        );
+    }())));
+    return MessageFormat;
+}())}
+
 function getJSON$1 (jsonURL, cb, errBack) {return __async(function*(){
     try {
         if (Array.isArray(jsonURL)) {
@@ -1979,6 +2000,16 @@ if (typeof fetch === 'undefined') {
 
 // If strawman approved, this would only be
 //    needed in the Node polyfill
+let IntlMessageFormat$2; // Already being set globally, but we'll make it local anyways
+getLocalizedIntlMessageFormat().then((IntlMessageFormatLocalized) => {
+    IntlMessageFormat$2 = IntlMessageFormatLocalized;
+    const msg = new IntlMessageFormat$2('', 'zh');
+    console.log(msg.resolvedOptions().locale);
+
+    const msg2 = new IntlMessageFormat$2('', 'zh-Hans');
+    console.log(msg2.resolvedOptions().locale);
+});
+
 function IMFClass (opts) {
     if (!(this instanceof IMFClass)) {
         return new IMFClass(opts);
@@ -2102,7 +2133,7 @@ IMFClass.prototype.getFormatter = function (ns, sep) {
         if (!values && !formats) {
             return message;
         }
-        const msg = new MessageFormat(message, this.langs, formats);
+        const msg = new IntlMessageFormat$2(message, this.langs, formats);
         return msg.format(values);
     };
 };

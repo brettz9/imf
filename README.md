@@ -1,5 +1,7 @@
 # imf
 
+[![npm Version][npm-badge]][npm]
+[![Dependency Status][david-badge]][david]
 [![Greenkeeper badge](https://badges.greenkeeper.io/brettz9/imf.svg)](https://greenkeeper.io/)
 
 A convenience wrapper for [intl-messageformat](https://github.com/yahoo/intl-messageformat).
@@ -153,6 +155,8 @@ IMF({
             all fallback locale files, use `this.fallbackLocales` from
             within your callback.
 
+    -   `IntlMessageFormat` - An optional alternative constructor to the global `IntlMessageFormat`
+
 -   `getFormatter(ns, sep)` - A generic formatter building method; can be
     supplied an optional namespace and optional separator, defaulting
     otherwise to `defaultNamespace` and `defaultSeparator`, respectively.
@@ -232,21 +236,10 @@ IMF({
 
 -   `fallbackLanguages`  Will automatically be set.
 
-# To-dos
+## To-dos
 
-1.  Add utility for auto-setting `document.title`, `html.lang`, and
-    `html.dir`
-1.  Some code like this to import Yahoo's locale files (plural rules
-    and sublanguages) (or if necessary calling
-    `IntlMessageFormat.__addLocaleData()` ourselves). Won't be necessary
-    for browser in future if implemented
-```js
-const text = (await fetch('path/to/Yahoo/IntlMessageFormat/dist/locale-data/XX.js')).text();
-console.log(text);
-```
+1.  Add utility for auto-setting `document.title` (though possibly with own lang/dir),
+    `html.lang`, and `html.dir` (auto-detect latter using https://github.com/shadiabuhilal/rtl-detect)
 1.  Support JSONP (allowing for multi-line template strings or other
     deviants from non-JSON syntax like single quotes).
-1.  Add logic to recover if file like `en-US.json` is not
-    present but `en.json` is (might enhance `getJSON`
-    errBack to capture thrown object with file property
-    indicating the file causing the error).
+1.  Support localStorage (or indexedDB) for locales

@@ -1,153 +1,181 @@
-// If strawman approved, this would only be
-//    needed in the Node polyfill
-import IntlMessageFormat from 'intl-messageformat';
+/* globals IntlMessageFormat */
 import getJSON from 'simple-get-json';
 
-function IMFClass (opts) {
-    if (!(this instanceof IMFClass)) {
-        return new IMFClass(opts);
+const isArray = Array.isArray;
+
+// See request to load locale info synchronously: https://github.com/yahoo/intl-messageformat/issues/174
+// The localized version defines plural rules (`pluralRuleFunction`) and
+//    parent languages (`parentLocale`)
+// With synchronous XHR deprecated, the only way to keep this fully
+//   modular (without requiring other blocking script tags) is to go async
+// Won't be necessary for browser in future if implemented
+// We could alternatively do the `IntlMessageFormat.__addLocaleData()` calls ourselves
+
+// https://github.com/yahoo/intl-messageformat/issues/175
+// Normal rule: ca-ES-VALENCIA -> ca-ES; zh-Hans -> zh
+// Exceptions:
+//      pt-AO -> pt-PT
+//      en-150 -> en-001
+//      es-AR -> es-419
+//      es-BO -> es-419
+// For parentRule request: https://github.com/yahoo/intl-messageformat/issues/175
+// Get `locale` from `resolvedOptions`
+// IntlMessageFormat.__localeData__[locale.toLowerCase()].parentLocale
+// IntlMessageFormat.__localeData__['zh-hans'].parentLocale
+/*
+1.  Todo: Add logic to recover if file like `en-US.json` is not
+    present but `en.json` is (might enhance `getJSON`
+    errBack to capture thrown object with file property
+    indicating the file causing the error). Or even look for
+    `en-GB.json`
+1. Todo: Expose resolvedOptions and/or IntlMessageFormat instance
+*/
+class IMF {
+    constructor (opts = {}) {
+        Object.assign(this, {
+            IntlMessageFormat,
+            fallbackLanguages: undefined,
+            langs: undefined,
+            defaultNamespace: '',
+            defaultSeparator: '.',
+            basePath: 'locales/',
+            locales: [],
+            fallbackLocales: [],
+            localeFileResolver: (lang) => `${this.basePath}${lang}.json`
+        }, opts);
+
+        const {languages, callback, namespace, fallbackLanguages} = opts;
+        if (languages || callback) {
+            this.load({languages, fallbackLanguages, namespace, callback, _noArgs: true});
+        } else if (fallbackLanguages) {
+            this.loadFallbacks();
+        }
     }
-    opts = opts || {};
 
-    this.defaultNamespace = opts.defaultNamespace || '';
-    this.defaultSeparator = opts.defaultSeparator === undefined ? '.' : opts.defaultSeparator;
-    this.basePath = opts.basePath || 'locales/';
-    this.fallbackLanguages = opts.fallbackLanguages;
+    setMessageFormat (messageFormatObject) {
+        this.IntlMessageFormat = messageFormatObject;
+    }
 
-    this.localeFileResolver = opts.localeFileResolver || function (lang) {
-        return this.basePath + lang + '.json';
-    };
+    async load ({languages, fallbackLanguages, namespace, callback, _noArgs = false}) { // eslint-disable-line camelcase
+        const locales = await this.loadLocales({languages});
+        let fallbackLocales;
+        if (fallbackLanguages) {
+            fallbackLocales = await this.loadFallbacks();
+        }
+        if (!callback && _noArgs) {
+            return;
+        }
+        const args = [
+            this.getFormatter({defaultNamespace: namespace}),
+            this.getFormatter.bind(this),
+            locales,
+            fallbackLocales
+        ];
+        if (callback) {
+            callback.apply(this, args);
+        }
+        return args;
+    }
 
-    this.locales = opts.locales || [];
-    this.langs = opts.langs;
-    this.fallbackLocales = opts.fallbackLocales || [];
-
-    const loadFallbacks = (cb) => {
-        this.loadLocales(this.fallbackLanguages, function (...fallbackLocales) {
-            this.fallbackLocales.push(...fallbackLocales);
-            if (cb) {
-                return cb(fallbackLocales);
-            }
-        }, true);
-    };
-
-    if (opts.languages || opts.callback) {
-        this.loadLocales(opts.languages, () => {
-            const locales = Array.from(arguments);
-            const runCallback = (fallbackLocales) => {
-                if (opts.callback) {
-                    opts.callback.apply(this, [
-                        this.getFormatter(opts.namespace),
-                        this.getFormatter.bind(this),
-                        locales,
-                        fallbackLocales
-                    ]);
-                }
-            };
-            if (opts.hasOwnProperty('fallbackLanguages')) {
-                loadFallbacks(runCallback);
-            } else {
-                runCallback();
-            }
+    async loadFallbacks (cb) {
+        const fallbackLocales = await this.loadLocales({
+            avoidSettingLocales: true,
+            languages: this.fallbackLanguages
         });
-    } else if (opts.hasOwnProperty('fallbackLanguages')) {
-        loadFallbacks();
+        this.fallbackLocales.push(...fallbackLocales);
+        return fallbackLocales;
     }
+
+    getFormatter ({defaultNamespace = this.defaultNamespace, separator = this.defaultSeparator}) {
+        function messageForNSParts (locale, namesp, sep, key) {
+            let loc = locale;
+            const found = namesp.split(sep).every(function (nsPart) {
+                loc = loc[nsPart];
+                return loc && typeof loc === 'object';
+            });
+            return found && loc[key] ? loc[key] : '';
+        }
+
+        if (isArray(defaultNamespace)) {
+            defaultNamespace = defaultNamespace.join(separator);
+        }
+
+        return (key, values, formats, fallback) => {
+            let message;
+            let namespace = defaultNamespace;
+            if (key && !isArray(key) && typeof key === 'object') {
+                ({values, formats, fallback, key} = key);
+            }
+            if (!isArray(key)) {
+                if (!namespace && String(key).includes(separator)) {
+                    key = key.split(separator);
+                }
+            }
+            if (isArray(key)) { // e.g., [ns1, ns2, key]
+                const newKey = key.pop();
+                namespace = key.join(separator);
+                key = newKey;
+            }
+            function findMessage (locales) {
+                locales.some((locale) => {
+                    message = locale[(namespace ? namespace + separator : '') + key] ||
+                        messageForNSParts(locale, namespace, separator, key);
+                    return message;
+                });
+                return message;
+            }
+            findMessage(this.locales);
+            if (!message) {
+                if (typeof fallback === 'function') {
+                    return fallback({
+                        namespace, separator, key, values, formats, // eslint-disable-line object-property-newline
+                        message: this.fallbackLocales.length && findMessage(this.fallbackLocales),
+                        langs: this.langs
+                    });
+                }
+                if (fallback !== false) {
+                    return this.fallbackLocales.length && findMessage(this.fallbackLocales);
+                }
+                throw new Error(
+                    'Message not found for locales ' + this.langs +
+                    (this.fallbackLanguages
+                        ? ' (with fallback languages ' + this.fallbackLanguages + ')'
+                        : ''
+                    ) +
+                    ' with key ' + key + ', namespace ' + namespace +
+                    ', and namespace separator ' + separator
+                );
+            }
+            if (!values && !formats) {
+                return message;
+            }
+            const msg = new this.IntlMessageFormat(message, this.langs, formats);
+            return msg.format(values);
+        };
+    }
+
+    async loadLocales ({cb, avoidSettingLocales, languages = navigator.language || 'en-US'}) {
+        if (!isArray(languages)) {
+            languages = [languages];
+        }
+        if (!avoidSettingLocales) {
+            this.langs = languages;
+        }
+        const locales = await getJSON(languages.map(this.localeFileResolver, this));
+        if (!avoidSettingLocales) {
+            this.locales.push(...locales);
+        }
+        if (cb) {
+            cb.apply(this, locales);
+        }
+        return locales;
+    }
+};
+
+async function IMFFormatter (IMF, {options}) {
+    const imf = new IMF(options);
+    const formattersAndLocales = await imf.formattersAndLocales();
+    return {imf, ...formattersAndLocales};
 }
 
-IMFClass.prototype.getFormatter = function (ns, sep) {
-    function messageForNSParts (locale, namesp, separator, key) {
-        let loc = locale;
-        const found = namesp.split(separator).every(function (nsPart) {
-            loc = loc[nsPart];
-            return loc && typeof loc === 'object';
-        });
-        return found && loc[key] ? loc[key] : '';
-    }
-    const isArray = Array.isArray;
-
-    ns = ns === undefined ? this.defaultNamespace : ns;
-    sep = sep === undefined ? this.defaultSeparator : sep;
-    ns = isArray(ns) ? ns.join(sep) : ns;
-
-    return (key, values, formats, fallback) => {
-        let message;
-        let currNs = ns;
-        if (key && !isArray(key) && typeof key === 'object') {
-            values = key.values;
-            formats = key.formats;
-            fallback = key.fallback;
-            key = key.key;
-        }
-        if (isArray(key)) { // e.g., [ns1, ns2, key]
-            const newKey = key.pop();
-            currNs = key.join(sep);
-            key = newKey;
-        } else {
-            const keyPos = key.indexOf(sep);
-            if (!currNs && keyPos > -1) { // e.g., 'ns1.ns2.key'
-                currNs = key.slice(0, keyPos);
-                key = key.slice(keyPos + 1);
-            }
-        }
-        function findMessage (locales) {
-            locales.some(function (locale) {
-                message = locale[(currNs ? currNs + sep : '') + key] || messageForNSParts(locale, currNs, sep, key);
-                return message;
-            });
-            return message;
-        }
-        findMessage(this.locales);
-        if (!message) {
-            if (typeof fallback === 'function') {
-                return fallback({
-                    message: this.fallbackLocales.length && findMessage(this.fallbackLocales),
-                    langs: this.langs,
-                    namespace: currNs,
-                    separator: sep,
-                    key,
-                    values,
-                    formats
-                });
-            }
-            if (fallback !== false) {
-                return this.fallbackLocales.length && findMessage(this.fallbackLocales);
-            }
-            throw new Error(
-                'Message not found for locales ' + this.langs +
-                (this.fallbackLanguages
-                    ? ' (with fallback languages ' + this.fallbackLanguages + ')'
-                    : ''
-                ) +
-                ' with key ' + key + ', namespace ' + currNs +
-                ', and namespace separator ' + sep
-            );
-        }
-        if (!values && !formats) {
-            return message;
-        }
-        const msg = new IntlMessageFormat(message, this.langs, formats);
-        return msg.format(values);
-    };
-};
-
-IMFClass.prototype.loadLocales = function (langs, cb, avoidSettingLocales) {
-    langs = langs || navigator.language || 'en-US';
-    langs = Array.isArray(langs) ? langs : [langs];
-    if (!avoidSettingLocales) {
-        this.langs = langs;
-    }
-    return getJSON(
-        langs.map(this.localeFileResolver, this),
-        (...locales) => {
-            if (!avoidSettingLocales) {
-                this.locales.push(...locales);
-            }
-            if (cb) {
-                cb.apply(this, locales);
-            }
-        }
-    );
-};
-
-export default IMFClass;
+export {IMFFormatter, IMF, IMF as default};

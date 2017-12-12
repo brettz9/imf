@@ -1,4 +1,5 @@
-import IMF from '../index-es6-polyglot.js';
+/* globals IntlMessageFormat */
+import {getIMF} from '../setFormat.js';
 
 const write = (...msgs) => {
     if (typeof document !== 'undefined') {
@@ -9,31 +10,40 @@ const write = (...msgs) => {
         console.log(...msgs);
     }
 };
-IMF({
-    languages: ['zh-CN', 'en-US'],
-    callback: function (l, getFormatter) { // , enLocale, esLocale, ptLocale, zhCNLocale
-        write(l('Localized value!')); // Looks up 'Localized value!' in Chinese file (at 'locales/zh-CN.json') and in English (at 'locales/en.json') if not present in Chinese
-        const tk = getFormatter('tablekey');
-        write(tk('Tablekey localized value!')); // Equivalent to l('tablekey.Tablekey localized value!')
 
-        const tk2 = getFormatter(['tablekey', 'nestedMore']);
-        write(tk2('Tablekey localized value2'));
+(async () => {
+    const {IMF, IMFFormatter} = await getIMF({localized: true});
 
-        const tk3 = getFormatter('tablekey.nestedMore');
+    const {f, makeSubFormatter} = await IMFFormatter({languages: ['zh-CN', 'en-US']});
+    // , enLocale, esLocale, ptLocale, zhCNLocale
 
-        write(tk3('Tablekey localized value2'));
+    // Todo: Change to real tests and also include actual formatting examples!
+    write(f('Localized value!')); // Looks up 'Localized value!' in Chinese file (at 'locales/zh-CN.json') and in English (at 'locales/en.json') if not present in Chinese
 
-        IMF({
-            languages: 'zh-CN',
-            fallbackLanguages: 'en-US',
-            callback: function (l, getFormatter) {
-                l({
-                    key: 'onlyInEnglish',
-                    fallback (res) {
-                        write(res.message);
-                    }
-                });
-            }
-        });
-    }
-});
+    const tkf = makeSubFormatter('tablekey');
+    write(tkf('Tablekey localized value!')); // Equivalent to l('tablekey.Tablekey localized value!')
+
+    const tkf2 = makeSubFormatter(['tablekey', 'nestedMore']);
+    write(tkf2('Tablekey localized value2'));
+
+    const tkf3 = makeSubFormatter('tablekey.nestedMore');
+    write(tkf3('Tablekey localized value2'));
+
+    const imfFallback = IMF({
+        languages: 'zh-CN',
+        fallbackLanguages: 'en-US'
+    });
+    const {_} = await imfFallback.formattersAndLocales();
+    _({
+        key: 'onlyInEnglish',
+        fallback (res) {
+            write(res.message);
+        }
+    });
+
+    const msg = new IntlMessageFormat('', 'zh');
+    console.log(msg.resolvedOptions().locale);
+
+    const msg2 = new IntlMessageFormat('', 'zh-Hans');
+    console.log(msg2.resolvedOptions().locale);
+})();
