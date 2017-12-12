@@ -29,7 +29,6 @@ const isArray = Array.isArray;
     indicating the file causing the error). Or even look for
     `en-GB.json`
 1. Todo: Expose resolvedOptions and/or IntlMessageFormat instance
-1. Todo: Return this.locales/this.fallbackLocales instead of just recently retrieved?
 */
 class IMF {
     constructor (opts = {}) {
@@ -162,10 +161,11 @@ class IMF {
         if (!avoidSettingLocales) {
             this.langs = languages;
         }
-        const locales = await getJSON(languages.map(this.localeFileResolver, this));
+        let locales = await getJSON(languages.map(this.localeFileResolver, this));
         if (!avoidSettingLocales) {
             this.locales.push(...locales);
         }
+        locales = avoidSettingLocales ? locales : this.locales;
         if (cb) {
             cb.apply(this, locales);
         }
