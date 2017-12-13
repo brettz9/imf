@@ -245,3 +245,5 @@ IMF({
 1.  Support JSONP (allowing for multi-line template strings or other
     deviants from non-JSON syntax like single quotes).
 1.  Support localStorage (or indexedDB) for locales
+1.  Reference <https://www.npmjs.com/package/flat> in docs for those who'd like to
+    easily migrate to a flattened version later (either of which are compatible).
