@@ -11,6 +11,7 @@ const isArray = Array.isArray;
 // Won't be necessary for browser in future if implemented
 // We could alternatively do the `IntlMessageFormat.__addLocaleData()` calls ourselves
 
+// https://github.com/tc39/ecma402/issues/46#issuecomment-351260753
 // https://github.com/yahoo/intl-messageformat/issues/175
 // Normal rule: ca-ES-VALENCIA -> ca-ES; zh-Hans -> zh
 // Exceptions:
