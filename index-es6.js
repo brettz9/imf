@@ -11,7 +11,6 @@ const isArray = Array.isArray;
 // Won't be necessary for browser in future if implemented
 // We could alternatively do the `IntlMessageFormat.__addLocaleData()` calls ourselves
 
-// https://github.com/tc39/ecma402/issues/46#issuecomment-351260753
 // https://github.com/yahoo/intl-messageformat/issues/175
 // Normal rule: ca-ES-VALENCIA -> ca-ES; zh-Hans -> zh
 // Exceptions:
@@ -21,6 +20,8 @@ const isArray = Array.isArray;
 //      es-BO -> es-419
 // For parentRule request: https://github.com/yahoo/intl-messageformat/issues/175
 // Get `locale` from `resolvedOptions`
+// Though potentially inadequate (see https://github.com/tc39/ecma402/issues/46#issuecomment-351260753),
+//  for now, use macrolanguages from https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry
 // IntlMessageFormat.__localeData__[locale.toLowerCase()].parentLocale
 // IntlMessageFormat.__localeData__['zh-hans'].parentLocale
 /*
