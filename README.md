@@ -29,9 +29,9 @@ import IMF from './node_modules/imf/dist/index-es6.js';
 const IMF = require('imf');
 ```
 
-# Example
+# JSON Structure
 
-For the following JSON file structure...
+The following forms are equivalent:
 
 ```json
 {
@@ -69,7 +69,13 @@ OR
 }
 ```
 
-...etc., one could do:
+(Note that if one wishes to migrate to a more or less flattened structure, [flat](https://www.npmjs.com/package/flat) may be of assistance. It has facilities
+for determining overwrite and depth behaviors as well as how to handle or create
+arrays.)
+
+# Example
+
+For the above JSON, one could do:
 
 ```js
 IMF({
@@ -241,8 +247,6 @@ IMF({
 1.  Add utility for auto-setting `document.title` (though possibly with own lang/dir),
     `html.lang`, and `html.dir` (auto-detect latter using <https://github.com/shadiabuhilal/rtl-detect>; also 3/4 scripts that could use
     vertical writing modes `p.vertical { writing-mode: vertical-rl; }`); also filed <https://github.com/tc39/ecma402/issues/205> for auto-detecting this;
+1.  Support localStorage (or indexedDB) for locales
 1.  Support JSONP (allowing for multi-line template strings or other
     deviants from non-JSON syntax like single quotes).
-1.  Support localStorage (or indexedDB) for locales
-1.  Reference <https://www.npmjs.com/package/flat> in docs for those who'd like to
-    easily migrate to a flattened version later (either of which are compatible).
