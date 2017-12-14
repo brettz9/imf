@@ -1,5 +1,7 @@
 # imf
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/brettz9/imf.svg)](https://greenkeeper.io/)
+
 A convenience wrapper for [intl-messageformat](https://github.com/yahoo/intl-messageformat).
 
 # Installation
