@@ -1,9 +1,11 @@
 /* eslint-env node */
 import IntlMessageFormat from 'intl-messageformat';
-import imf from './index-es6.js';
+import {IMF, imf} from './index.js';
 
 if (typeof global !== 'undefined') {
     global.IntlMessageFormat = IntlMessageFormat;
+} else {
+    window.IntlMessageFormat = IntlMessageFormat;
 }
 
-export default imf;
+export {IMF, imf, imf as default};

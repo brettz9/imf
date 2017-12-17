@@ -1,15 +1,17 @@
 import nodeResolve from 'rollup-plugin-node-resolve';
 import async from 'rollup-plugin-async'; // simple-get-json
+import babel from 'rollup-plugin-babel';
 
 export default [{
     input: 'tests/index.js',
     output: {
-        file: 'tests/index-node.js',
+        file: 'build/index-node.js',
         format: 'umd',
         name: 'testImf'
     },
     plugins: [
         async(),
+        babel(),
         nodeResolve({
             modulesOnly: true,
             main: false,
@@ -21,7 +23,7 @@ export default [{
 }, {
     input: 'tests/index.js',
     output: {
-        file: 'tests/index-browser.js',
+        file: 'build/index-browser.js',
         format: 'umd',
         name: 'testImf'
     },

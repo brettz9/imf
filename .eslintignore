@@ -2,4 +2,4 @@
 /tests/index-node.js
 /tests/index-browser.js
 dist
-/locales.js
+src/locales.js

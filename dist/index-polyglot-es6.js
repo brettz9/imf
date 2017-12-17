@@ -1,9 +1,3 @@
-(function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(factory());
-}(this, (function () { 'use strict';
-
 /*
 Copyright (c) 2014, Yahoo! Inc. All rights reserved.
 Copyrights licensed under the New BSD License.
@@ -16,11 +10,16 @@ var hop = Object.prototype.hasOwnProperty;
 
 function extend(obj) {
     var sources = Array.prototype.slice.call(arguments, 1),
-        i, len, source, key;
+        i,
+        len,
+        source,
+        key;
 
     for (i = 0, len = sources.length; i < len; i += 1) {
         source = sources[i];
-        if (!source) { continue; }
+        if (!source) {
+            continue;
+        }
 
         for (key in source) {
             if (hop.call(source, key)) {
@@ -38,18 +37,18 @@ Copyrights licensed under the New BSD License.
 See the accompanying LICENSE file for terms.
 */
 
-/* jslint esnext: true */
-
 // Purposely using the same implementation as the Intl.js `Intl` polyfill.
 // Copyright 2013 Andy Earnshaw, MIT License
 
-var realDefineProp = (function () {
-    try { return !!Object.defineProperty({}, 'a', {}); }
-    catch (e) { return false; }
-})();
+var realDefineProp = function () {
+    try {
+        return !!Object.defineProperty({}, 'a', {});
+    } catch (e) {
+        return false;
+    }
+}();
 
-var defineProperty = realDefineProp ? Object.defineProperty :
-        function (obj, name, desc) {
+var defineProperty = realDefineProp ? Object.defineProperty : function (obj, name, desc) {
 
     if ('get' in desc && obj.__defineGetter__) {
         obj.__defineGetter__(name, desc.get);
@@ -80,29 +79,27 @@ Copyrights licensed under the New BSD License.
 See the accompanying LICENSE file for terms.
 */
 
-/* jslint esnext: true */
-
-function Compiler$1(locales, formats, pluralFn) {
-    this.locales  = locales;
-    this.formats  = formats;
+function Compiler(locales, formats, pluralFn) {
+    this.locales = locales;
+    this.formats = formats;
     this.pluralFn = pluralFn;
 }
 
-Compiler$1.prototype.compile = function (ast) {
-    this.pluralStack        = [];
-    this.currentPlural      = null;
+Compiler.prototype.compile = function (ast) {
+    this.pluralStack = [];
+    this.currentPlural = null;
     this.pluralNumberFormat = null;
 
     return this.compileMessage(ast);
 };
 
-Compiler$1.prototype.compileMessage = function (ast) {
+Compiler.prototype.compileMessage = function (ast) {
     if (!(ast && ast.type === 'messageFormatPattern')) {
         throw new Error('Message AST is not of type: "messageFormatPattern"');
     }
 
     var elements = ast.elements,
-        pattern  = [];
+        pattern = [];
 
     var i, len, element;
 
@@ -126,7 +123,7 @@ Compiler$1.prototype.compileMessage = function (ast) {
     return pattern;
 };
 
-Compiler$1.prototype.compileMessageText = function (element) {
+Compiler.prototype.compileMessageText = function (element) {
     // When this `element` is part of plural sub-pattern and its value contains
     // an unescaped '#', use a `PluralOffsetString` helper to properly output
     // the number with the correct offset in the string.
@@ -137,26 +134,22 @@ Compiler$1.prototype.compileMessageText = function (element) {
             this.pluralNumberFormat = new Intl.NumberFormat(this.locales);
         }
 
-        return new PluralOffsetString(
-                this.currentPlural.id,
-                this.currentPlural.format.offset,
-                this.pluralNumberFormat,
-                element.value);
+        return new PluralOffsetString(this.currentPlural.id, this.currentPlural.format.offset, this.pluralNumberFormat, element.value);
     }
 
     // Unescape the escaped '#'s in the message text.
     return element.value.replace(/\\#/g, '#');
 };
 
-Compiler$1.prototype.compileArgument = function (element) {
+Compiler.prototype.compileArgument = function (element) {
     var format = element.format;
 
     if (!format) {
         return new StringFormat(element.id);
     }
 
-    var formats  = this.formats,
-        locales  = this.locales,
+    var formats = this.formats,
+        locales = this.locales,
         pluralFn = this.pluralFn,
         options;
 
@@ -164,29 +157,27 @@ Compiler$1.prototype.compileArgument = function (element) {
         case 'numberFormat':
             options = formats.number[format.style];
             return {
-                id    : element.id,
+                id: element.id,
                 format: new Intl.NumberFormat(locales, options).format
             };
 
         case 'dateFormat':
             options = formats.date[format.style];
             return {
-                id    : element.id,
+                id: element.id,
                 format: new Intl.DateTimeFormat(locales, options).format
             };
 
         case 'timeFormat':
             options = formats.time[format.style];
             return {
-                id    : element.id,
+                id: element.id,
                 format: new Intl.DateTimeFormat(locales, options).format
             };
 
         case 'pluralFormat':
             options = this.compileOptions(element);
-            return new PluralFormat(
-                element.id, format.ordinal, format.offset, options, pluralFn
-            );
+            return new PluralFormat(element.id, format.ordinal, format.offset, options, pluralFn);
 
         case 'selectFormat':
             options = this.compileOptions(element);
@@ -197,9 +188,9 @@ Compiler$1.prototype.compileArgument = function (element) {
     }
 };
 
-Compiler$1.prototype.compileOptions = function (element) {
-    var format      = element.format,
-        options     = format.options,
+Compiler.prototype.compileOptions = function (element) {
+    var format = element.format,
+        options = format.options,
         optionsHash = {};
 
     // Save the current plural element, if any, then set it to a new value when
@@ -238,39 +229,36 @@ StringFormat.prototype.format = function (value) {
 };
 
 function PluralFormat(id, useOrdinal, offset, options, pluralFn) {
-    this.id         = id;
+    this.id = id;
     this.useOrdinal = useOrdinal;
-    this.offset     = offset;
-    this.options    = options;
-    this.pluralFn   = pluralFn;
+    this.offset = offset;
+    this.options = options;
+    this.pluralFn = pluralFn;
 }
 
 PluralFormat.prototype.getOption = function (value) {
     var options = this.options;
 
-    var option = options['=' + value] ||
-            options[this.pluralFn(value - this.offset, this.useOrdinal)];
+    var option = options['=' + value] || options[this.pluralFn(value - this.offset, this.useOrdinal)];
 
     return option || options.other;
 };
 
 function PluralOffsetString(id, offset, numberFormat, string) {
-    this.id           = id;
-    this.offset       = offset;
+    this.id = id;
+    this.offset = offset;
     this.numberFormat = numberFormat;
-    this.string       = string;
+    this.string = string;
 }
 
 PluralOffsetString.prototype.format = function (value) {
     var number = this.numberFormat.format(value - this.offset);
 
-    return this.string
-            .replace(/(^|[^\\])#/g, '$1' + number)
-            .replace(/\\#/g, '#');
+    return this.string.replace(/(^|[^\\])#/g, '$1' + number).replace(/\\#/g, '#');
 };
 
 function SelectFormat(id, options) {
-    this.id      = id;
+    this.id = id;
     this.options = options;
 }
 
@@ -279,19 +267,28 @@ SelectFormat.prototype.getOption = function (value) {
     return options[value] || options.other;
 };
 
-var parser = (function() {
+var parser = (function () {
+
+  /*
+   * Generated by PEG.js 0.9.0.
+   *
+   * http://pegjs.org/
+   */
+
   function peg$subclass(child, parent) {
-    function ctor() { this.constructor = child; }
+    function ctor() {
+      this.constructor = child;
+    }
     ctor.prototype = parent.prototype;
     child.prototype = new ctor();
   }
 
   function peg$SyntaxError(message, expected, found, location) {
-    this.message  = message;
+    this.message = message;
     this.expected = expected;
-    this.found    = found;
+    this.found = found;
     this.location = location;
-    this.name     = "SyntaxError";
+    this.name = "SyntaxError";
 
     if (typeof Error.captureStackTrace === "function") {
       Error.captureStackTrace(this, peg$SyntaxError);
@@ -302,41 +299,41 @@ var parser = (function() {
 
   function peg$parse(input) {
     var options = arguments.length > 1 ? arguments[1] : {},
-        parser  = this,
-
         peg$FAILED = {},
-
         peg$startRuleFunctions = { start: peg$parsestart },
-        peg$startRuleFunction  = peg$parsestart,
+        peg$startRuleFunction = peg$parsestart,
+        peg$c0 = function peg$c0(elements) {
+      return {
+        type: 'messageFormatPattern',
+        elements: elements,
+        location: location()
+      };
+    },
+        peg$c1 = function peg$c1(text) {
+      var string = '',
+          i,
+          j,
+          outerLen,
+          inner,
+          innerLen;
 
-        peg$c0 = function(elements) {
-                return {
-                    type    : 'messageFormatPattern',
-                    elements: elements,
-                    location: location()
-                };
-            },
-        peg$c1 = function(text) {
-                var string = '',
-                    i, j, outerLen, inner, innerLen;
+      for (i = 0, outerLen = text.length; i < outerLen; i += 1) {
+        inner = text[i];
 
-                for (i = 0, outerLen = text.length; i < outerLen; i += 1) {
-                    inner = text[i];
+        for (j = 0, innerLen = inner.length; j < innerLen; j += 1) {
+          string += inner[j];
+        }
+      }
 
-                    for (j = 0, innerLen = inner.length; j < innerLen; j += 1) {
-                        string += inner[j];
-                    }
-                }
-
-                return string;
-            },
-        peg$c2 = function(messageText) {
-                return {
-                    type : 'messageTextElement',
-                    value: messageText,
-                    location: location()
-                };
-            },
+      return string;
+    },
+        peg$c2 = function peg$c2(messageText) {
+      return {
+        type: 'messageTextElement',
+        value: messageText,
+        location: location()
+      };
+    },
         peg$c3 = /^[^ \t\n\r,.+={}#]/,
         peg$c4 = { type: "class", value: "[^ \\t\\n\\r,.+={}#]", description: "[^ \\t\\n\\r,.+={}#]" },
         peg$c5 = "{",
@@ -345,81 +342,81 @@ var parser = (function() {
         peg$c8 = { type: "literal", value: ",", description: "\",\"" },
         peg$c9 = "}",
         peg$c10 = { type: "literal", value: "}", description: "\"}\"" },
-        peg$c11 = function(id, format) {
-                return {
-                    type  : 'argumentElement',
-                    id    : id,
-                    format: format && format[2],
-                    location: location()
-                };
-            },
+        peg$c11 = function peg$c11(id, format) {
+      return {
+        type: 'argumentElement',
+        id: id,
+        format: format && format[2],
+        location: location()
+      };
+    },
         peg$c12 = "number",
         peg$c13 = { type: "literal", value: "number", description: "\"number\"" },
         peg$c14 = "date",
         peg$c15 = { type: "literal", value: "date", description: "\"date\"" },
         peg$c16 = "time",
         peg$c17 = { type: "literal", value: "time", description: "\"time\"" },
-        peg$c18 = function(type, style) {
-                return {
-                    type : type + 'Format',
-                    style: style && style[2],
-                    location: location()
-                };
-            },
+        peg$c18 = function peg$c18(type, style) {
+      return {
+        type: type + 'Format',
+        style: style && style[2],
+        location: location()
+      };
+    },
         peg$c19 = "plural",
         peg$c20 = { type: "literal", value: "plural", description: "\"plural\"" },
-        peg$c21 = function(pluralStyle) {
-                return {
-                    type   : pluralStyle.type,
-                    ordinal: false,
-                    offset : pluralStyle.offset || 0,
-                    options: pluralStyle.options,
-                    location: location()
-                };
-            },
+        peg$c21 = function peg$c21(pluralStyle) {
+      return {
+        type: pluralStyle.type,
+        ordinal: false,
+        offset: pluralStyle.offset || 0,
+        options: pluralStyle.options,
+        location: location()
+      };
+    },
         peg$c22 = "selectordinal",
         peg$c23 = { type: "literal", value: "selectordinal", description: "\"selectordinal\"" },
-        peg$c24 = function(pluralStyle) {
-                return {
-                    type   : pluralStyle.type,
-                    ordinal: true,
-                    offset : pluralStyle.offset || 0,
-                    options: pluralStyle.options,
-                    location: location()
-                }
-            },
+        peg$c24 = function peg$c24(pluralStyle) {
+      return {
+        type: pluralStyle.type,
+        ordinal: true,
+        offset: pluralStyle.offset || 0,
+        options: pluralStyle.options,
+        location: location()
+      };
+    },
         peg$c25 = "select",
         peg$c26 = { type: "literal", value: "select", description: "\"select\"" },
-        peg$c27 = function(options) {
-                return {
-                    type   : 'selectFormat',
-                    options: options,
-                    location: location()
-                };
-            },
+        peg$c27 = function peg$c27(options) {
+      return {
+        type: 'selectFormat',
+        options: options,
+        location: location()
+      };
+    },
         peg$c28 = "=",
         peg$c29 = { type: "literal", value: "=", description: "\"=\"" },
-        peg$c30 = function(selector, pattern) {
-                return {
-                    type    : 'optionalFormatPattern',
-                    selector: selector,
-                    value   : pattern,
-                    location: location()
-                };
-            },
+        peg$c30 = function peg$c30(selector, pattern) {
+      return {
+        type: 'optionalFormatPattern',
+        selector: selector,
+        value: pattern,
+        location: location()
+      };
+    },
         peg$c31 = "offset:",
         peg$c32 = { type: "literal", value: "offset:", description: "\"offset:\"" },
-        peg$c33 = function(number) {
-                return number;
-            },
-        peg$c34 = function(offset, options) {
-                return {
-                    type   : 'pluralFormat',
-                    offset : offset,
-                    options: options,
-                    location: location()
-                };
-            },
+        peg$c33 = function peg$c33(number) {
+      return number;
+    },
+        peg$c34 = function peg$c34(offset, options) {
+      return {
+        type: 'pluralFormat',
+        offset: offset,
+        options: options,
+        location: location()
+      };
+    },
         peg$c35 = { type: "other", description: "whitespace" },
         peg$c36 = /^[ \t\n\r]/,
         peg$c37 = { type: "class", value: "[ \\t\\n\\r]", description: "[ \\t\\n\\r]" },
@@ -432,37 +429,45 @@ var parser = (function() {
         peg$c44 = { type: "literal", value: "0", description: "\"0\"" },
         peg$c45 = /^[1-9]/,
         peg$c46 = { type: "class", value: "[1-9]", description: "[1-9]" },
-        peg$c47 = function(digits) {
-            return parseInt(digits, 10);
-        },
+        peg$c47 = function peg$c47(digits) {
+      return parseInt(digits, 10);
+    },
         peg$c48 = /^[^{}\\\0-\x1F \t\n\r]/,
         peg$c49 = { type: "class", value: "[^{}\\\\\\0-\\x1F\\x7f \\t\\n\\r]", description: "[^{}\\\\\\0-\\x1F\\x7f \\t\\n\\r]" },
         peg$c50 = "\\\\",
         peg$c51 = { type: "literal", value: "\\\\", description: "\"\\\\\\\\\"" },
-        peg$c52 = function() { return '\\'; },
+        peg$c52 = function peg$c52() {
+      return '\\';
+    },
         peg$c53 = "\\#",
         peg$c54 = { type: "literal", value: "\\#", description: "\"\\\\#\"" },
-        peg$c55 = function() { return '\\#'; },
+        peg$c55 = function peg$c55() {
+      return '\\#';
+    },
         peg$c56 = "\\{",
         peg$c57 = { type: "literal", value: "\\{", description: "\"\\\\{\"" },
-        peg$c58 = function() { return '\u007B'; },
+        peg$c58 = function peg$c58() {
+      return "{";
+    },
         peg$c59 = "\\}",
         peg$c60 = { type: "literal", value: "\\}", description: "\"\\\\}\"" },
-        peg$c61 = function() { return '\u007D'; },
+        peg$c61 = function peg$c61() {
+      return "}";
+    },
         peg$c62 = "\\u",
         peg$c63 = { type: "literal", value: "\\u", description: "\"\\\\u\"" },
-        peg$c64 = function(digits) {
-                return String.fromCharCode(parseInt(digits, 16));
-            },
-        peg$c65 = function(chars) { return chars.join(''); },
-
-        peg$currPos          = 0,
-        peg$savedPos         = 0,
-        peg$posDetailsCache  = [{ line: 1, column: 1, seenCR: false }],
-        peg$maxFailPos       = 0,
-        peg$maxFailExpected  = [],
-        peg$silentFails      = 0,
-
+        peg$c64 = function peg$c64(digits) {
+      return String.fromCharCode(parseInt(digits, 16));
+    },
+        peg$c65 = function peg$c65(chars) {
+      return chars.join('');
+    },
+        peg$currPos = 0,
+        peg$savedPos = 0,
+        peg$posDetailsCache = [{ line: 1, column: 1, seenCR: false }],
+        peg$maxFailPos = 0,
+        peg$maxFailExpected = [],
+        peg$silentFails = 0,
         peg$result;
 
     if ("startRule" in options) {
@@ -479,7 +484,8 @@ var parser = (function() {
 
     function peg$computePosDetails(pos) {
       var details = peg$posDetailsCache[pos],
-          p, ch;
+          p,
+          ch;
 
       if (details) {
         return details;
@@ -491,7 +497,7 @@ var parser = (function() {
 
         details = peg$posDetailsCache[p];
         details = {
-          line:   details.line,
+          line: details.line,
           column: details.column,
           seenCR: details.seenCR
         };
@@ -499,7 +505,9 @@ var parser = (function() {
         while (p < pos) {
           ch = input.charAt(p);
           if (ch === "\n") {
-            if (!details.seenCR) { details.line++; }
+            if (!details.seenCR) {
+              details.line++;
+            }
             details.column = 1;
             details.seenCR = false;
           } else if (ch === "\r" || ch === "\u2028" || ch === "\u2029") {
@@ -521,24 +529,26 @@ var parser = (function() {
 
     function peg$computeLocation(startPos, endPos) {
       var startPosDetails = peg$computePosDetails(startPos),
-          endPosDetails   = peg$computePosDetails(endPos);
+          endPosDetails = peg$computePosDetails(endPos);
 
       return {
         start: {
           offset: startPos,
-          line:   startPosDetails.line,
+          line: startPosDetails.line,
           column: startPosDetails.column
         },
         end: {
           offset: endPos,
-          line:   endPosDetails.line,
+          line: endPosDetails.line,
           column: endPosDetails.column
         }
       };
     }
 
     function peg$fail(expected) {
-      if (peg$currPos < peg$maxFailPos) { return; }
+      if (peg$currPos < peg$maxFailPos) {
+        return;
+      }
 
       if (peg$currPos > peg$maxFailPos) {
         peg$maxFailPos = peg$currPos;
@@ -552,7 +562,7 @@ var parser = (function() {
       function cleanupExpected(expected) {
         var i = 1;
 
-        expected.sort(function(a, b) {
+        expected.sort(function (a, b) {
           if (a.description < b.description) {
             return -1;
           } else if (a.description > b.description) {
@@ -573,34 +583,31 @@ var parser = (function() {
 
       function buildMessage(expected, found) {
         function stringEscape(s) {
-          function hex(ch) { return ch.charCodeAt(0).toString(16).toUpperCase(); }
+          function hex(ch) {
+            return ch.charCodeAt(0).toString(16).toUpperCase();
+          }
 
-          return s
-            .replace(/\\/g,   '\\\\')
-            .replace(/"/g,    '\\"')
-            .replace(/\x08/g, '\\b')
-            .replace(/\t/g,   '\\t')
-            .replace(/\n/g,   '\\n')
-            .replace(/\f/g,   '\\f')
-            .replace(/\r/g,   '\\r')
-            .replace(/[\x00-\x07\x0B\x0E\x0F]/g, function(ch) { return '\\x0' + hex(ch); })
-            .replace(/[\x10-\x1F\x80-\xFF]/g,    function(ch) { return '\\x'  + hex(ch); })
-            .replace(/[\u0100-\u0FFF]/g,         function(ch) { return '\\u0' + hex(ch); })
-            .replace(/[\u1000-\uFFFF]/g,         function(ch) { return '\\u'  + hex(ch); });
+          return s.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\x08/g, '\\b').replace(/\t/g, '\\t').replace(/\n/g, '\\n').replace(/\f/g, '\\f').replace(/\r/g, '\\r').replace(/[\x00-\x07\x0B\x0E\x0F]/g, function (ch) {
+            return '\\x0' + hex(ch);
+          }).replace(/[\x10-\x1F\x80-\xFF]/g, function (ch) {
+            return '\\x' + hex(ch);
+          }).replace(/[\u0100-\u0FFF]/g, function (ch) {
+            return "\\u0" + hex(ch);
+          }).replace(/[\u1000-\uFFFF]/g, function (ch) {
+            return "\\u" + hex(ch);
+          });
         }
 
         var expectedDescs = new Array(expected.length),
-            expectedDesc, foundDesc, i;
+            expectedDesc,
+            foundDesc,
+            i;
 
         for (i = 0; i < expected.length; i++) {
           expectedDescs[i] = expected[i].description;
         }
 
-        expectedDesc = expected.length > 1
-          ? expectedDescs.slice(0, -1).join(", ")
-              + " or "
-              + expectedDescs[expected.length - 1]
-          : expectedDescs[0];
+        expectedDesc = expected.length > 1 ? expectedDescs.slice(0, -1).join(", ") + " or " + expectedDescs[expected.length - 1] : expectedDescs[0];
 
         foundDesc = found ? "\"" + stringEscape(found) + "\"" : "end of input";
 
@@ -611,12 +618,7 @@ var parser = (function() {
         cleanupExpected(expected);
       }
 
-      return new peg$SyntaxError(
-        message !== null ? message : buildMessage(expected, found),
-        expected,
-        found,
-        location
-      );
+      return new peg$SyntaxError(message !== null ? message : buildMessage(expected, found), expected, found, location);
     }
 
     function peg$parsestart() {
@@ -755,7 +757,9 @@ var parser = (function() {
           peg$currPos++;
         } else {
           s2 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c4); }
+          if (peg$silentFails === 0) {
+            peg$fail(peg$c4);
+          }
         }
         if (s2 !== peg$FAILED) {
           while (s2 !== peg$FAILED) {
@@ -765,7 +769,9 @@ var parser = (function() {
               peg$currPos++;
             } else {
               s2 = peg$FAILED;
-              if (peg$silentFails === 0) { peg$fail(peg$c4); }
+              if (peg$silentFails === 0) {
+                peg$fail(peg$c4);
+              }
             }
           }
         } else {
@@ -790,7 +796,9 @@ var parser = (function() {
         peg$currPos++;
       } else {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c6); }
+        if (peg$silentFails === 0) {
+          peg$fail(peg$c6);
+        }
       }
       if (s1 !== peg$FAILED) {
         s2 = peg$parse_();
@@ -805,7 +813,9 @@ var parser = (function() {
                 peg$currPos++;
               } else {
                 s6 = peg$FAILED;
-                if (peg$silentFails === 0) { peg$fail(peg$c8); }
+                if (peg$silentFails === 0) {
+                  peg$fail(peg$c8);
+                }
               }
               if (s6 !== peg$FAILED) {
                 s7 = peg$parse_();
@@ -837,7 +847,9 @@ var parser = (function() {
                     peg$currPos++;
                   } else {
                     s7 = peg$FAILED;
-                    if (peg$silentFails === 0) { peg$fail(peg$c10); }
+                    if (peg$silentFails === 0) {
+                      peg$fail(peg$c10);
+                    }
                   }
                   if (s7 !== peg$FAILED) {
                     peg$savedPos = s0;
@@ -901,7 +913,9 @@ var parser = (function() {
         peg$currPos += 6;
       } else {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c13); }
+        if (peg$silentFails === 0) {
+          peg$fail(peg$c13);
+        }
       }
       if (s1 === peg$FAILED) {
         if (input.substr(peg$currPos, 4) === peg$c14) {
@@ -909,7 +923,9 @@ var parser = (function() {
           peg$currPos += 4;
         } else {
           s1 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c15); }
+          if (peg$silentFails === 0) {
+            peg$fail(peg$c15);
+          }
         }
         if (s1 === peg$FAILED) {
           if (input.substr(peg$currPos, 4) === peg$c16) {
@@ -917,7 +933,9 @@ var parser = (function() {
             peg$currPos += 4;
           } else {
             s1 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c17); }
+            if (peg$silentFails === 0) {
+              peg$fail(peg$c17);
+            }
           }
         }
       }
@@ -930,7 +948,9 @@ var parser = (function() {
             peg$currPos++;
           } else {
             s4 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c8); }
+            if (peg$silentFails === 0) {
+              peg$fail(peg$c8);
+            }
           }
           if (s4 !== peg$FAILED) {
             s5 = peg$parse_();
@@ -983,7 +1003,9 @@ var parser = (function() {
         peg$currPos += 6;
       } else {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c20); }
+        if (peg$silentFails === 0) {
+          peg$fail(peg$c20);
+        }
       }
       if (s1 !== peg$FAILED) {
         s2 = peg$parse_();
@@ -993,7 +1015,9 @@ var parser = (function() {
             peg$currPos++;
           } else {
             s3 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c8); }
+            if (peg$silentFails === 0) {
+              peg$fail(peg$c8);
+            }
           }
           if (s3 !== peg$FAILED) {
             s4 = peg$parse_();
@@ -1036,7 +1060,9 @@ var parser = (function() {
         peg$currPos += 13;
       } else {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c23); }
+        if (peg$silentFails === 0) {
+          peg$fail(peg$c23);
+        }
       }
       if (s1 !== peg$FAILED) {
         s2 = peg$parse_();
@@ -1046,7 +1072,9 @@ var parser = (function() {
             peg$currPos++;
           } else {
             s3 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c8); }
+            if (peg$silentFails === 0) {
+              peg$fail(peg$c8);
+            }
           }
           if (s3 !== peg$FAILED) {
             s4 = peg$parse_();
@@ -1089,7 +1117,9 @@ var parser = (function() {
         peg$currPos += 6;
       } else {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c26); }
+        if (peg$silentFails === 0) {
+          peg$fail(peg$c26);
+        }
       }
       if (s1 !== peg$FAILED) {
         s2 = peg$parse_();
@@ -1099,7 +1129,9 @@ var parser = (function() {
             peg$currPos++;
           } else {
             s3 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c8); }
+            if (peg$silentFails === 0) {
+              peg$fail(peg$c8);
+            }
           }
           if (s3 !== peg$FAILED) {
             s4 = peg$parse_();
@@ -1152,7 +1184,9 @@ var parser = (function() {
         peg$currPos++;
       } else {
         s2 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c29); }
+        if (peg$silentFails === 0) {
+          peg$fail(peg$c29);
+        }
       }
       if (s2 !== peg$FAILED) {
         s3 = peg$parsenumber();
@@ -1194,7 +1228,9 @@ var parser = (function() {
               peg$currPos++;
             } else {
               s4 = peg$FAILED;
-              if (peg$silentFails === 0) { peg$fail(peg$c6); }
+              if (peg$silentFails === 0) {
+                peg$fail(peg$c6);
+              }
             }
             if (s4 !== peg$FAILED) {
               s5 = peg$parse_();
@@ -1208,7 +1244,9 @@ var parser = (function() {
                       peg$currPos++;
                     } else {
                       s8 = peg$FAILED;
-                      if (peg$silentFails === 0) { peg$fail(peg$c10); }
+                      if (peg$silentFails === 0) {
+                        peg$fail(peg$c10);
+                      }
                     }
                     if (s8 !== peg$FAILED) {
                       peg$savedPos = s0;
@@ -1259,7 +1297,9 @@ var parser = (function() {
         peg$currPos += 7;
       } else {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c32); }
+        if (peg$silentFails === 0) {
+          peg$fail(peg$c32);
+        }
       }
       if (s1 !== peg$FAILED) {
         s2 = peg$parse_();
@@ -1336,7 +1376,9 @@ var parser = (function() {
         peg$currPos++;
       } else {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c37); }
+        if (peg$silentFails === 0) {
+          peg$fail(peg$c37);
+        }
       }
       if (s1 !== peg$FAILED) {
         while (s1 !== peg$FAILED) {
@@ -1346,7 +1388,9 @@ var parser = (function() {
             peg$currPos++;
           } else {
             s1 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c37); }
+            if (peg$silentFails === 0) {
+              peg$fail(peg$c37);
+            }
           }
         }
       } else {
@@ -1355,7 +1399,9 @@ var parser = (function() {
       peg$silentFails--;
       if (s0 === peg$FAILED) {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c35); }
+        if (peg$silentFails === 0) {
+          peg$fail(peg$c35);
+        }
       }
 
       return s0;
@@ -1380,7 +1426,9 @@ var parser = (function() {
       peg$silentFails--;
       if (s0 === peg$FAILED) {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c38); }
+        if (peg$silentFails === 0) {
+          peg$fail(peg$c38);
+        }
       }
 
       return s0;
@@ -1394,7 +1442,9 @@ var parser = (function() {
         peg$currPos++;
       } else {
         s0 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c40); }
+        if (peg$silentFails === 0) {
+          peg$fail(peg$c40);
+        }
       }
 
       return s0;
@@ -1408,7 +1458,9 @@ var parser = (function() {
         peg$currPos++;
       } else {
         s0 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c42); }
+        if (peg$silentFails === 0) {
+          peg$fail(peg$c42);
+        }
       }
 
       return s0;
@@ -1423,7 +1475,9 @@ var parser = (function() {
         peg$currPos++;
       } else {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c44); }
+        if (peg$silentFails === 0) {
+          peg$fail(peg$c44);
+        }
       }
       if (s1 === peg$FAILED) {
         s1 = peg$currPos;
@@ -1433,7 +1487,9 @@ var parser = (function() {
           peg$currPos++;
         } else {
           s3 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c46); }
+          if (peg$silentFails === 0) {
+            peg$fail(peg$c46);
+          }
         }
         if (s3 !== peg$FAILED) {
           s4 = [];
@@ -1476,7 +1532,9 @@ var parser = (function() {
         peg$currPos++;
       } else {
         s0 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c49); }
+        if (peg$silentFails === 0) {
+          peg$fail(peg$c49);
+        }
       }
       if (s0 === peg$FAILED) {
         s0 = peg$currPos;
@@ -1485,7 +1543,9 @@ var parser = (function() {
           peg$currPos += 2;
         } else {
           s1 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c51); }
+          if (peg$silentFails === 0) {
+            peg$fail(peg$c51);
+          }
         }
         if (s1 !== peg$FAILED) {
           peg$savedPos = s0;
@@ -1499,7 +1559,9 @@ var parser = (function() {
             peg$currPos += 2;
           } else {
             s1 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c54); }
+            if (peg$silentFails === 0) {
+              peg$fail(peg$c54);
+            }
           }
           if (s1 !== peg$FAILED) {
             peg$savedPos = s0;
@@ -1513,7 +1575,9 @@ var parser = (function() {
               peg$currPos += 2;
             } else {
               s1 = peg$FAILED;
-              if (peg$silentFails === 0) { peg$fail(peg$c57); }
+              if (peg$silentFails === 0) {
+                peg$fail(peg$c57);
+              }
             }
             if (s1 !== peg$FAILED) {
               peg$savedPos = s0;
@@ -1527,7 +1591,9 @@ var parser = (function() {
                 peg$currPos += 2;
               } else {
                 s1 = peg$FAILED;
-                if (peg$silentFails === 0) { peg$fail(peg$c60); }
+                if (peg$silentFails === 0) {
+                  peg$fail(peg$c60);
+                }
               }
               if (s1 !== peg$FAILED) {
                 peg$savedPos = s0;
@@ -1541,7 +1607,9 @@ var parser = (function() {
                   peg$currPos += 2;
                 } else {
                   s1 = peg$FAILED;
-                  if (peg$silentFails === 0) { peg$fail(peg$c63); }
+                  if (peg$silentFails === 0) {
+                    peg$fail(peg$c63);
+                  }
                 }
                 if (s1 !== peg$FAILED) {
                   s2 = peg$currPos;
@@ -1630,20 +1698,13 @@ var parser = (function() {
         peg$fail({ type: "end", description: "end of input" });
       }
 
-      throw peg$buildException(
-        null,
-        peg$maxFailExpected,
-        peg$maxFailPos < input.length ? input.charAt(peg$maxFailPos) : null,
-        peg$maxFailPos < input.length
-          ? peg$computeLocation(peg$maxFailPos, peg$maxFailPos + 1)
-          : peg$computeLocation(peg$maxFailPos, peg$maxFailPos)
-      );
+      throw peg$buildException(null, peg$maxFailExpected, peg$maxFailPos < input.length ? input.charAt(peg$maxFailPos) : null, peg$maxFailPos < input.length ? peg$computeLocation(peg$maxFailPos, peg$maxFailPos + 1) : peg$computeLocation(peg$maxFailPos, peg$maxFailPos));
     }
   }
 
   return {
     SyntaxError: peg$SyntaxError,
-    parse:       peg$parse
+    parse: peg$parse
   };
 })();
 
@@ -1653,14 +1714,11 @@ Copyrights licensed under the New BSD License.
 See the accompanying LICENSE file for terms.
 */
 
-/* jslint esnext: true */
-
 // -- MessageFormat --------------------------------------------------------
 
 function MessageFormat(message, locales, formats) {
     // Parse string messages into an AST.
-    var ast = typeof message === 'string' ?
-            MessageFormat.__parse(message) : message;
+    var ast = typeof message === 'string' ? MessageFormat.__parse(message) : message;
 
     if (!(ast && ast.type === 'messageFormatPattern')) {
         throw new TypeError('A message must be provided as a String or AST.');
@@ -1671,30 +1729,27 @@ function MessageFormat(message, locales, formats) {
     formats = this._mergeFormats(MessageFormat.formats, formats);
 
     // Defined first because it's used to build the format pattern.
-    defineProperty(this, '_locale',  {value: this._resolveLocale(locales)});
+    defineProperty(this, '_locale', { value: this._resolveLocale(locales) });
 
     // Compile the `ast` to a pattern that is highly optimized for repeated
     // `format()` invocations. **Note:** This passes the `locales` set provided
     // to the constructor instead of just the resolved locale.
     var pluralFn = this._findPluralRuleFunction(this._locale);
-    var pattern  = this._compilePattern(ast, locales, formats, pluralFn);
+    var pattern = this._compilePattern(ast, locales, formats, pluralFn);
 
     // "Bind" `format()` method to `this` so it can be passed by reference like
     // the other `Intl` APIs.
     var messageFormat = this;
     this.format = function (values) {
-      try {
-        return messageFormat._format(pattern, values);
-      } catch (e) {
-        if (e.variableId) {
-          throw new Error(
-            'The intl string context variable \'' + e.variableId + '\'' +
-            ' was not provided to the string \'' + message + '\''
-          );
-        } else {
-          throw e;
+        try {
+            return messageFormat._format(pattern, values);
+        } catch (e) {
+            if (e.variableId) {
+                throw new Error('The intl string context variable \'' + e.variableId + '\'' + ' was not provided to the string \'' + message + '\'');
+            } else {
+                throw e;
+            }
         }
-      }
     };
 }
 
@@ -1718,53 +1773,53 @@ defineProperty(MessageFormat, 'formats', {
         date: {
             'short': {
                 month: 'numeric',
-                day  : 'numeric',
-                year : '2-digit'
+                day: 'numeric',
+                year: '2-digit'
             },
 
             'medium': {
                 month: 'short',
-                day  : 'numeric',
-                year : 'numeric'
+                day: 'numeric',
+                year: 'numeric'
             },
 
             'long': {
                 month: 'long',
-                day  : 'numeric',
-                year : 'numeric'
+                day: 'numeric',
+                year: 'numeric'
             },
 
             'full': {
                 weekday: 'long',
-                month  : 'long',
-                day    : 'numeric',
-                year   : 'numeric'
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric'
             }
         },
 
         time: {
             'short': {
-                hour  : 'numeric',
+                hour: 'numeric',
                 minute: 'numeric'
             },
 
-            'medium':  {
-                hour  : 'numeric',
+            'medium': {
+                hour: 'numeric',
                 minute: 'numeric',
                 second: 'numeric'
             },
 
             'long': {
-                hour        : 'numeric',
-                minute      : 'numeric',
-                second      : 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric',
                 timeZoneName: 'short'
             },
 
             'full': {
-                hour        : 'numeric',
-                minute      : 'numeric',
-                second      : 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric',
                 timeZoneName: 'short'
             }
         }
@@ -1772,27 +1827,24 @@ defineProperty(MessageFormat, 'formats', {
 });
 
 // Define internal private properties for dealing with locale data.
-defineProperty(MessageFormat, '__localeData__', {value: objCreate(null)});
-defineProperty(MessageFormat, '__addLocaleData', {value: function (data) {
-    if (!(data && data.locale)) {
-        throw new Error(
-            'Locale data provided to IntlMessageFormat is missing a ' +
-            '`locale` property'
-        );
-    }
+defineProperty(MessageFormat, '__localeData__', { value: objCreate(null) });
+defineProperty(MessageFormat, '__addLocaleData', { value: function value(data) {
+        if (!(data && data.locale)) {
+            throw new Error('Locale data provided to IntlMessageFormat is missing a ' + '`locale` property');
+        }
 
-    MessageFormat.__localeData__[data.locale.toLowerCase()] = data;
-}});
+        MessageFormat.__localeData__[data.locale.toLowerCase()] = data;
+    } });
 
 // Defines `__parse()` static method as an exposed private.
-defineProperty(MessageFormat, '__parse', {value: parser.parse});
+defineProperty(MessageFormat, '__parse', { value: parser.parse });
 
 // Define public `defaultLocale` property which defaults to English, but can be
 // set by the developer.
 defineProperty(MessageFormat, 'defaultLocale', {
     enumerable: true,
-    writable  : true,
-    value     : undefined
+    writable: true,
+    value: undefined
 });
 
 MessageFormat.prototype.resolvedOptions = function () {
@@ -1803,13 +1855,13 @@ MessageFormat.prototype.resolvedOptions = function () {
 };
 
 MessageFormat.prototype._compilePattern = function (ast, locales, formats, pluralFn) {
-    var compiler = new Compiler$1(locales, formats, pluralFn);
+    var compiler = new Compiler(locales, formats, pluralFn);
     return compiler.compile(ast);
 };
 
 MessageFormat.prototype._findPluralRuleFunction = function (locale) {
     var localeData = MessageFormat.__localeData__;
-    var data       = localeData[locale.toLowerCase()];
+    var data = localeData[locale.toLowerCase()];
 
     // The locale data is de-duplicated, so we have to traverse the locale's
     // hierarchy until we find a `pluralRuleFunction` to return.
@@ -1821,15 +1873,17 @@ MessageFormat.prototype._findPluralRuleFunction = function (locale) {
         data = data.parentLocale && localeData[data.parentLocale.toLowerCase()];
     }
 
-    throw new Error(
-        'Locale data added to IntlMessageFormat is missing a ' +
-        '`pluralRuleFunction` for :' + locale
-    );
+    throw new Error('Locale data added to IntlMessageFormat is missing a ' + '`pluralRuleFunction` for :' + locale);
 };
 
 MessageFormat.prototype._format = function (pattern, values) {
     var result = '',
-        i, len, part, id, value, err;
+        i,
+        len,
+        part,
+        id,
+        value,
+        err;
 
     for (i = 0, len = pattern.length; i < len; i += 1) {
         part = pattern[i];
@@ -1844,9 +1898,9 @@ MessageFormat.prototype._format = function (pattern, values) {
 
         // Enforce that all required values are provided by the caller.
         if (!(values && hop.call(values, id))) {
-          err = new Error('A value must be provided for: ' + id);
-          err.variableId = id;
-          throw err;
+            err = new Error('A value must be provided for: ' + id);
+            err.variableId = id;
+            throw err;
         }
 
         value = values[id];
@@ -1866,10 +1920,13 @@ MessageFormat.prototype._format = function (pattern, values) {
 
 MessageFormat.prototype._mergeFormats = function (defaults, formats) {
     var mergedFormats = {},
-        type, mergedType;
+        type,
+        mergedType;
 
     for (type in defaults) {
-        if (!hop.call(defaults, type)) { continue; }
+        if (!hop.call(defaults, type)) {
+            continue;
+        }
 
         mergedFormats[type] = mergedType = objCreate(defaults[type]);
 
@@ -1913,291 +1970,628 @@ MessageFormat.prototype._resolveLocale = function (locales) {
     }
 
     var defaultLocale = locales.pop();
-    throw new Error(
-        'No locale data has been added to IntlMessageFormat for: ' +
-        locales.join(', ') + ', or the default locale: ' + defaultLocale
-    );
+    throw new Error('No locale data has been added to IntlMessageFormat for: ' + locales.join(', ') + ', or the default locale: ' + defaultLocale);
 };
 
 // GENERATED FILE
-var defaultLocale = {"locale":"en","pluralRuleFunction":function (n,ord){var s=String(n).split("."),v0=!s[1],t0=Number(s[0])==n,n10=t0&&s[0].slice(-1),n100=t0&&s[0].slice(-2);if(ord)return n10==1&&n100!=11?"one":n10==2&&n100!=12?"two":n10==3&&n100!=13?"few":"other";return n==1&&v0?"one":"other"}};
+var defaultLocale = { "locale": "en", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+    var s = String(n).split("."),
+        v0 = !s[1],
+        t0 = Number(s[0]) == n,
+        n10 = t0 && s[0].slice(-1),
+        n100 = t0 && s[0].slice(-2);if (ord) return n10 == 1 && n100 != 11 ? "one" : n10 == 2 && n100 != 12 ? "two" : n10 == 3 && n100 != 13 ? "few" : "other";return n == 1 && v0 ? "one" : "other";
+  } };
 
 /* jslint esnext: true */
 
 MessageFormat.__addLocaleData(defaultLocale);
 MessageFormat.defaultLocale = 'en';
 
-function __async(g){return new Promise(function(s,j){function c(a,x){try{var r=g[x?"throw":"next"](a);}catch(e){j(e);return}r.done?s(r.value):Promise.resolve(r.value).then(c,d);}function d(e){c(e,1);}c();})}
+function __async(g) {
+  return new Promise(function (s, j) {
+    function c(a, x) {
+      try {
+        var r = g[x ? "throw" : "next"](a);
+      } catch (e) {
+        j(e);return;
+      }r.done ? s(r.value) : Promise.resolve(r.value).then(c, d);
+    }function d(e) {
+      c(e, 1);
+    }c();
+  });
+}
 
-var locales = ["af","agq","ak","am","ar","as","asa","ast","az","bas","be","bem","bez","bg","bh","bm","bn","bo","br","brx","bs","ca","ce","cgg","chr","ckb","cs","cu","cy","da","dav","de","dje","dsb","dua","dv","dyo","dz","ebu","ee","el","en","eo","es","et","eu","ewo","fa","ff","fi","fil","fo","fr","fur","fy","ga","gd","gl","gsw","gu","guw","guz","gv","ha","haw","he","hi","hr","hsb","hu","hy","id","ig","ii","in","is","it","iu","iw","ja","jbo","jgo","ji","jmc","jv","jw","ka","kab","kaj","kam","kcg","kde","kea","khq","ki","kk","kkj","kl","kln","km","kn","ko","kok","ks","ksb","ksf","ksh","ku","kw","ky","lag","lb","lg","lkt","ln","lo","lrc","lt","lu","luo","luy","lv","mas","mer","mfe","mg","mgh","mgo","mk","ml","mn","mo","mr","ms","mt","mua","my","mzn","nah","naq","nb","nd","ne","nl","nmg","nn","nnh","no","nqo","nr","nso","nus","ny","nyn","om","or","os","pa","pap","pl","prg","ps","pt","qu","rm","rn","ro","rof","ru","rw","rwk","sah","saq","sbp","sdh","se","seh","ses","sg","sh","shi","si","sk","sl","sma","smi","smj","smn","sms","sn","so","sq","sr","ss","ssy","st","sv","sw","syr","ta","te","teo","th","ti","tig","tk","tl","tn","to","tr","ts","twq","tzm","ug","uk","ur","uz","vai","ve","vi","vo","vun","wa","wae","wo","xh","xog","yav","yi","yo","zgh","zh","zu"];
+function getJSON(jsonURL, cb, errBack) {
+    return __async( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        var arrResult, result;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+            while (1) {
+                switch (_context.prev = _context.next) {
+                    case 0:
+                        _context.prev = 0;
 
-/* globals global */
-// Needed to allow our code below to work
-const glob = typeof window !== 'undefined' ? window : global;
-glob.IntlMessageFormat = MessageFormat;
+                        if (!Array.isArray(jsonURL)) {
+                            _context.next = 7;
+                            break;
+                        }
 
-// https://github.com/rollup/rollup/wiki/Troubleshooting#avoiding-eval
-const rollupSaferEval = eval; // eslint-disable-line no-eval
+                        _context.next = 4;
+                        return Promise.all(jsonURL.map(function (url) {
+                            return getJSON(url);
+                        }));
 
-function getLocalizedIntlMessageFormat () {return __async(function*(){
-    yield Promise.all(locales.map((locale) => __async(function*(){
-        const req = yield fetch(`/node_modules/intl-messageformat/dist/locale-data/${locale}.js`);
-        const jsText = yield req.text();
-        rollupSaferEval(
-            jsText
-        );
-    }())));
-    return MessageFormat;
-}())}
+                    case 4:
+                        arrResult = _context.sent;
 
-function getJSON$1 (jsonURL, cb, errBack) {return __async(function*(){
-    try {
-        if (Array.isArray(jsonURL)) {
-            const arrResult = yield Promise.all(jsonURL.map((url) => getJSON$1(url)));
-            if (cb) {
-                cb.apply(null, arrResult);
+                        if (cb) {
+                            cb.apply(null, arrResult);
+                        }
+                        return _context.abrupt("return", arrResult);
+
+                    case 7:
+                        _context.next = 9;
+                        return fetch(jsonURL).then(function (r) {
+                            return r.json();
+                        });
+
+                    case 9:
+                        result = _context.sent;
+                        return _context.abrupt("return", typeof cb === 'function' ? cb(result) : result);
+
+                    case 13:
+                        _context.prev = 13;
+                        _context.t0 = _context["catch"](0);
+
+                        _context.t0.message += " (File: " + jsonURL + ")";
+
+                        if (!errBack) {
+                            _context.next = 18;
+                            break;
+                        }
+
+                        return _context.abrupt("return", errBack(_context.t0, jsonURL));
+
+                    case 18:
+                        throw _context.t0;
+
+                    case 19:
+                    case "end":
+                        return _context.stop();
+                }
             }
-            return arrResult;
-        }
-        const result = yield fetch(jsonURL).then((r) => r.json());
-        return typeof cb === 'function' ? cb(result) : result;
-    } catch (e) {
-        e.message += ` (File: ${jsonURL})`;
-        if (errBack) {
-            return errBack(e, jsonURL);
-        }
-        throw e;
-    }
-}())}
+        }, _callee, this, [[0, 13]]);
+    })());
+}
 
 /* globals global, require */
 if (typeof fetch === 'undefined') {
-    global.fetch = (jsonURL) => {
-        return new Promise((resolve, reject) => {
-            const {XMLHttpRequest} = require('local-xmlhttprequest'); // Don't change to an import as won't resolve for browser testing
-            const r = new XMLHttpRequest();
+    global.fetch = function (jsonURL) {
+        return new Promise(function (resolve, reject) {
+            var _require = require('local-xmlhttprequest'),
+                XMLHttpRequest = _require.XMLHttpRequest; // Don't change to an import as won't resolve for browser testing
+
+
+            var r = new XMLHttpRequest();
             r.open('GET', jsonURL, true);
             // r.responseType = 'json';
             r.onreadystatechange = function () {
-                if (r.readyState !== 4) { return; }
+                if (r.readyState !== 4) {
+                    return;
+                }
                 if (r.status === 200) {
                     // var json = r.json;
-                    const response = r.responseText;
+                    var response = r.responseText;
                     resolve({
-                        json: () => JSON.parse(response)
+                        json: function json() {
+                            return JSON.parse(response);
+                        }
                     });
                     return;
                 }
-                reject(new SyntaxError(
-                    'Failed to fetch URL: ' + jsonURL + 'state: ' +
-                    r.readyState + '; status: ' + r.status
-                ));
+                reject(new SyntaxError('Failed to fetch URL: ' + jsonURL + 'state: ' + r.readyState + '; status: ' + r.status));
             };
             r.send();
         });
     };
 }
 
-// If strawman approved, this would only be
-//    needed in the Node polyfill
-let IntlMessageFormat$2; // Already being set globally, but we'll make it local anyways
-getLocalizedIntlMessageFormat().then((IntlMessageFormatLocalized) => {
-    IntlMessageFormat$2 = IntlMessageFormatLocalized;
-    const msg = new IntlMessageFormat$2('', 'zh');
-    console.log(msg.resolvedOptions().locale);
+var version = "3.0.1";
 
-    const msg2 = new IntlMessageFormat$2('', 'zh-Hans');
-    console.log(msg2.resolvedOptions().locale);
-});
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  return typeof obj;
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+};
 
-function IMFClass (opts) {
-    if (!(this instanceof IMFClass)) {
-        return new IMFClass(opts);
+var classCallCheck = function (instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+};
+
+var createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
     }
-    opts = opts || {};
+  }
 
-    this.defaultNamespace = opts.defaultNamespace || '';
-    this.defaultSeparator = opts.defaultSeparator === undefined ? '.' : opts.defaultSeparator;
-    this.basePath = opts.basePath || 'locales/';
-    this.fallbackLanguages = opts.fallbackLanguages;
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
+}();
 
-    this.localeFileResolver = opts.localeFileResolver || function (lang) {
-        return this.basePath + lang + '.json';
-    };
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];
 
-    this.locales = opts.locales || [];
-    this.langs = opts.langs;
-    this.fallbackLocales = opts.fallbackLocales || [];
-
-    const loadFallbacks = (cb) => {
-        this.loadLocales(this.fallbackLanguages, function (...fallbackLocales) {
-            this.fallbackLocales.push(...fallbackLocales);
-            if (cb) {
-                return cb(fallbackLocales);
-            }
-        }, true);
-    };
-
-    if (opts.languages || opts.callback) {
-        this.loadLocales(opts.languages, () => {
-            const locales = Array.from(arguments);
-            const runCallback = (fallbackLocales) => {
-                if (opts.callback) {
-                    opts.callback.apply(this, [
-                        this.getFormatter(opts.namespace),
-                        this.getFormatter.bind(this),
-                        locales,
-                        fallbackLocales
-                    ]);
-                }
-            };
-            if (opts.hasOwnProperty('fallbackLanguages')) {
-                loadFallbacks(runCallback);
-            } else {
-                runCallback();
-            }
-        });
-    } else if (opts.hasOwnProperty('fallbackLanguages')) {
-        loadFallbacks();
+    for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
     }
-}
+  }
 
-IMFClass.prototype.getFormatter = function (ns, sep) {
-    function messageForNSParts (locale, namesp, separator, key) {
-        let loc = locale;
-        const found = namesp.split(separator).every(function (nsPart) {
-            loc = loc[nsPart];
-            return loc && typeof loc === 'object';
-        });
-        return found && loc[key] ? loc[key] : '';
-    }
-    const isArray = Array.isArray;
+  return target;
+};
 
-    ns = ns === undefined ? this.defaultNamespace : ns;
-    sep = sep === undefined ? this.defaultSeparator : sep;
-    ns = isArray(ns) ? ns.join(sep) : ns;
+var toConsumableArray = function (arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
 
-    return (key, values, formats, fallback) => {
-        let message;
-        let currNs = ns;
-        if (key && !isArray(key) && typeof key === 'object') {
-            values = key.values;
-            formats = key.formats;
-            fallback = key.fallback;
-            key = key.key;
+    return arr2;
+  } else {
+    return Array.from(arr);
+  }
+};
+
+var baseURL = typeof __dirname !== 'undefined' ? __dirname : function () {
+    var src = document.currentScript && // May not be present if running from say console
+    document.currentScript.src || location.href;
+    return src.replace(/\/[^/]+\/?$/, '');
+}();
+var isArray = Array.isArray;
+
+// LOCALE LOADING
+// Needed to allow the non-modular scripts in `load` below to work
+// https://github.com/rollup/rollup/wiki/Troubleshooting#avoiding-eval
+var rollupSaferGlobalEval = eval; // eslint-disable-line no-eval
+
+var xor = function xor(a, b) {
+    return !a !== !b;
+};
+
+var IMF = function () {
+    function IMF() {
+        var _this = this;
+
+        var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+        classCallCheck(this, IMF);
+
+        if (xor(opts.languages, opts.locales)) {
+            throw new TypeError('If languages or locales is supplied, the other must be also.');
         }
-        if (isArray(key)) { // e.g., [ns1, ns2, key]
-            const newKey = key.pop();
-            currNs = key.join(sep);
-            key = newKey;
-        } else {
-            const keyPos = key.indexOf(sep);
-            if (!currNs && keyPos > -1) { // e.g., 'ns1.ns2.key'
-                currNs = key.slice(0, keyPos);
-                key = key.slice(keyPos + 1);
+        if (xor(opts.fallbackLanguages, opts.fallbackLocales)) {
+            throw new TypeError('If fallbackLanguages or fallbackLocales is supplied, the other must be also.');
+        }
+        Object.assign(this, {
+            defaultNamespace: '',
+            defaultSeparator: '.',
+            basePath: 'locales/',
+            avoidRuleLoading: false,
+            languages: [],
+            locales: [],
+            fallbackLanguages: [],
+            fallbackLocales: [],
+            localeExtension: 'json',
+            retriever: getJSON,
+            localeFileResolver: function localeFileResolver(lang) {
+                return '' + _this.basePath + lang + (_this.localeExtension ? '.' + _this.localeExtension : '');
             }
+        }, opts);
+    }
+
+    createClass(IMF, [{
+        key: 'load',
+        value: function load() {
+            var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+                languages = _ref.languages,
+                fallbackLanguages = _ref.fallbackLanguages,
+                defaultNamespace = _ref.defaultNamespace,
+                retriever = _ref.retriever,
+                _ref$avoidRuleLoading = _ref.avoidRuleLoading,
+                avoidRuleLoading = _ref$avoidRuleLoading === undefined ? this.avoidRuleLoading : _ref$avoidRuleLoading;
+
+            return __async( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+                var cache, promises, ret;
+                return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                    while (1) {
+                        switch (_context2.prev = _context2.next) {
+                            case 0:
+                                if (!(!languages && !fallbackLanguages && !this.languages.length && !this.fallbackLanguages.length)) {
+                                    _context2.next = 2;
+                                    break;
+                                }
+
+                                throw new TypeError('`languages` or `fallbackLanguages` must be supplied to `load` if none are preexisting.');
+
+                            case 2:
+                                if (!isArray(languages)) {
+                                    languages = [languages];
+                                }
+                                _context2.next = 5;
+                                return caches.open('imf-' + version);
+
+                            case 5:
+                                cache = _context2.sent;
+                                promises = [];
+
+                                if (!avoidRuleLoading) {
+                                    // We could avoid relying on a global `IntlMessageFormat` with a
+                                    //  user-supplied instance and local `eval`, but that is less
+                                    //  safe, and this is a polyfill anyways
+
+                                    // If expressed as a module (requested sync loading
+                                    //   at https://github.com/yahoo/intl-messageformat/issues/174#issuecomment-350638974 )
+                                    //   could use https://github.com/tc39/proposal-dynamic-import#example
+                                    //   until dynamic imports may exist given that this should only
+                                    //   be conditionally loaded.
+                                    // The localized version defines plural rules (`pluralRuleFunction`) and
+                                    //   parent languages (`parentLocale`)
+                                    // We could alternatively do the `IntlMessageFormat.__addLocaleData()` calls ourselves
+                                    promises.push.apply(promises, toConsumableArray([].concat(toConsumableArray(languages), toConsumableArray(fallbackLanguages)).map(function (language) {
+                                        return __async( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+                                            var normalizedLanguage, baseLanguage, url, cachedRuleResp, ruleResp, langRulesJSText;
+                                            return regeneratorRuntime.wrap(function _callee$(_context) {
+                                                while (1) {
+                                                    switch (_context.prev = _context.next) {
+                                                        case 0:
+                                                            normalizedLanguage = Intl.getCanonicalLocales(language)[0]; // Could use this: new IntlMessageFormat('', language).resolvedOptions().locale;
+
+                                                            baseLanguage = normalizedLanguage.replace(/-.*$/, '');
+                                                            url = new URL('./node_modules/intl-messageformat/dist/locale-data/' + baseLanguage + '.js', baseURL);
+                                                            _context.next = 5;
+                                                            return cache.match(new Request(url));
+
+                                                        case 5:
+                                                            cachedRuleResp = _context.sent;
+                                                            ruleResp = void 0, langRulesJSText = void 0;
+                                                            _context.prev = 7;
+                                                            _context.t0 = cachedRuleResp;
+
+                                                            if (_context.t0) {
+                                                                _context.next = 13;
+                                                                break;
+                                                            }
+
+                                                            _context.next = 12;
+                                                            return fetch(url);
+
+                                                        case 12:
+                                                            _context.t0 = _context.sent;
+
+                                                        case 13:
+                                                            ruleResp = _context.t0;
+
+                                                            if (ruleResp.ok) {
+                                                                _context.next = 16;
+                                                                break;
+                                                            }
+
+                                                            throw new Error('Response not OK');
+
+                                                        case 16:
+                                                            _context.next = 18;
+                                                            return ruleResp.text();
+
+                                                        case 18:
+                                                            langRulesJSText = _context.sent;
+                                                            _context.next = 25;
+                                                            break;
+
+                                                        case 21:
+                                                            _context.prev = 21;
+                                                            _context.t1 = _context['catch'](7);
+
+                                                            // We report error but allow other languages to get processed
+                                                            console.error('Localization rules for language ' + language + ' not found; erred with ' + _context.t1 + '; ignoring...');
+                                                            return _context.abrupt('return');
+
+                                                        case 25:
+                                                            try {
+                                                                rollupSaferGlobalEval(langRulesJSText);
+                                                                if (!cachedRuleResp) cache.put(url, ruleResp);
+                                                            } catch (err) {
+                                                                // We report error but allow other languages to get processed
+                                                                console.error('Error processing localization rules for language ' + language);
+                                                            }
+
+                                                        case 26:
+                                                        case 'end':
+                                                            return _context.stop();
+                                                    }
+                                                }
+                                            }, _callee, this, [[7, 21]]);
+                                        })());
+                                    })));
+                                }
+
+                                promises.unshift(this.loadLocales({ languages: languages, retriever: retriever }));
+                                if (fallbackLanguages) {
+                                    promises.splice(1, 0, this.loadFallbackLocales({ fallbackLanguages: fallbackLanguages, retriever: retriever }));
+                                }
+                                _context2.next = 12;
+                                return Promise.all(promises);
+
+                            case 12:
+                                ret = {
+                                    _: this.namespacer({ defaultNamespace: defaultNamespace }),
+                                    namespacer: this.namespacer.bind(this),
+                                    locales: this.locales,
+                                    fallbackLocales: this.fallbackLocales
+                                };
+                                // Add aliases
+
+                                ret.f = ret.l = ret._;
+                                return _context2.abrupt('return', ret);
+
+                            case 15:
+                            case 'end':
+                                return _context2.stop();
+                        }
+                    }
+                }, _callee2, this);
+            }).call(this));
         }
-        function findMessage (locales) {
-            locales.some(function (locale) {
-                message = locale[(currNs ? currNs + sep : '') + key] || messageForNSParts(locale, currNs, sep, key);
-                return message;
-            });
-            return message;
+    }, {
+        key: 'loadFallbackLocales',
+        value: function loadFallbackLocales(_ref2) {
+            var fallbackLanguages = _ref2.fallbackLanguages,
+                avoidSettingLocales = _ref2.avoidSettingLocales,
+                retriever = _ref2.retriever;
+            return __async( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+                var _fallbackLanguages, fallbackLocales, _fallbackLocales;
+
+                return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                    while (1) {
+                        switch (_context3.prev = _context3.next) {
+                            case 0:
+                                if (!avoidSettingLocales) {
+                                    (_fallbackLanguages = this.fallbackLanguages).push.apply(_fallbackLanguages, toConsumableArray(fallbackLanguages));
+                                }
+                                _context3.next = 3;
+                                return this.loadLocales({
+                                    avoidSettingLocales: true,
+                                    languages: fallbackLanguages,
+                                    retriever: retriever
+                                });
+
+                            case 3:
+                                fallbackLocales = _context3.sent;
+
+                                if (!avoidSettingLocales) {
+                                    (_fallbackLocales = this.fallbackLocales).push.apply(_fallbackLocales, toConsumableArray(fallbackLocales));
+                                }
+                                return _context3.abrupt('return', fallbackLocales);
+
+                            case 6:
+                            case 'end':
+                                return _context3.stop();
+                        }
+                    }
+                }, _callee3, this);
+            }).call(this));
         }
-        findMessage(this.locales);
-        if (!message) {
-            if (typeof fallback === 'function') {
-                return fallback({
-                    message: this.fallbackLocales.length && findMessage(this.fallbackLocales),
-                    langs: this.langs,
-                    namespace: currNs,
-                    separator: sep,
-                    key,
-                    values,
-                    formats
+    }, {
+        key: 'loadLocales',
+        value: function loadLocales(_ref3) {
+            var avoidSettingLocales = _ref3.avoidSettingLocales,
+                _ref3$retriever = _ref3.retriever,
+                retriever = _ref3$retriever === undefined ? getJSON : _ref3$retriever,
+                _ref3$languages = _ref3.languages,
+                languages = _ref3$languages === undefined ? navigator.languages ? navigator.languages[0] : navigator.language || navigator.userLanguage || 'en-US' : _ref3$languages;
+            return __async( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+                var _this2 = this;
+
+                var _languages, locales, _locales;
+
+                return regeneratorRuntime.wrap(function _callee5$(_context5) {
+                    while (1) {
+                        switch (_context5.prev = _context5.next) {
+                            case 0:
+                                if (!isArray(languages)) {
+                                    languages = [languages];
+                                }
+                                if (!avoidSettingLocales) {
+                                    (_languages = this.languages).push.apply(_languages, toConsumableArray(languages));
+                                }
+                                _context5.next = 4;
+                                return Promise.all( // Though getJSON can handle arrays, we don't assume all retrievers can (and we also want a language-specific error message)
+                                languages.map(function (language) {
+                                    return __async( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+                                        var url, cachedLocale;
+                                        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+                                            while (1) {
+                                                switch (_context4.prev = _context4.next) {
+                                                    case 0:
+                                                        url = new URL('' + language);
+                                                        cachedLocale = JSON.parse(localStorage.getItem(url));
+                                                        _context4.prev = 2;
+                                                        return _context4.abrupt('return', cachedLocale || retriever(this.localeFileResolver(language)));
+
+                                                    case 6:
+                                                        _context4.prev = 6;
+                                                        _context4.t0 = _context4['catch'](2);
+
+                                                        // We only warn as this could be intentionally deferring to parent
+                                                        console.warn('Locale could not be found for ' + language + '; erred with ' + _context4.t0);
+
+                                                        // Normal rule: ca-ES-VALENCIA -> ca-ES; zh-Hans -> zh
+                                                        // Exceptions:
+                                                        //      pt-AO -> pt-PT
+                                                        //      en-150 -> en-001
+                                                        //      es-AR -> es-419
+                                                        //      es-BO -> es-419
+                                                        // See also https://github.com/tc39/ecma402/issues/46#issuecomment-351260753 and links
+                                                        // See also macrolanguages from https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry
+
+                                                        // For future `Intl.getParentLocales`: https://github.com/tc39/ecma402/issues/87
+                                                        // Todo: If not present, check for parent locale(s) of `language`
+                                                        // IntlMessageFormat.__localeData__[locale.toLowerCase()].parentLocale
+                                                        // IntlMessageFormat.__localeData__['zh-hans'].parentLocale
+
+                                                        // Todo: look for sister locales if locale and parent (or grandparents) not present? https://github.com/tc39/ecma402/issues/87#issuecomment-352971275
+
+                                                        /*
+                                                        1. Todo: Change to real tests and also include actual formatting examples!
+                                                            1. `getJSON` catch to capture thrown object with file property
+                                                                indicating the file causing the error
+                                                        */
+
+                                                    case 9:
+                                                    case 'end':
+                                                        return _context4.stop();
+                                                }
+                                            }
+                                        }, _callee4, this, [[2, 6]]);
+                                    }).call(_this2));
+                                }));
+
+                            case 4:
+                                _context5.t0 = Boolean;
+                                locales = _context5.sent.filter(_context5.t0);
+
+                                if (!avoidSettingLocales) {
+                                    (_locales = this.locales).push.apply(_locales, toConsumableArray(locales));
+                                }
+                                return _context5.abrupt('return', locales);
+
+                            case 8:
+                            case 'end':
+                                return _context5.stop();
+                        }
+                    }
+                }, _callee5, this);
+            }).call(this));
+        }
+    }, {
+        key: 'namespacer',
+        value: function namespacer(_ref4) {
+            var _this3 = this;
+
+            var _ref4$namespace = _ref4.namespace,
+                defaultNamespace = _ref4$namespace === undefined ? this.defaultNamespace : _ref4$namespace,
+                _ref4$separator = _ref4.separator,
+                separator = _ref4$separator === undefined ? this.defaultSeparator : _ref4$separator;
+
+            function messageForNSParts(locale, namesp, sep, key) {
+                var loc = locale;
+                var found = namesp.split(sep).every(function (nsPart) {
+                    loc = loc[nsPart];
+                    return loc && (typeof loc === 'undefined' ? 'undefined' : _typeof(loc)) === 'object';
                 });
+                return found && loc[key] ? loc[key] : '';
             }
-            if (fallback !== false) {
-                return this.fallbackLocales.length && findMessage(this.fallbackLocales);
-            }
-            throw new Error(
-                'Message not found for locales ' + this.langs +
-                (this.fallbackLanguages
-                    ? ' (with fallback languages ' + this.fallbackLanguages + ')'
-                    : ''
-                ) +
-                ' with key ' + key + ', namespace ' + currNs +
-                ', and namespace separator ' + sep
-            );
-        }
-        if (!values && !formats) {
-            return message;
-        }
-        const msg = new IntlMessageFormat$2(message, this.langs, formats);
-        return msg.format(values);
-    };
-};
 
-IMFClass.prototype.loadLocales = function (langs, cb, avoidSettingLocales) {
-    langs = langs || navigator.language || 'en-US';
-    langs = Array.isArray(langs) ? langs : [langs];
-    if (!avoidSettingLocales) {
-        this.langs = langs;
-    }
-    return getJSON$1(
-        langs.map(this.localeFileResolver, this),
-        (...locales) => {
-            if (!avoidSettingLocales) {
-                this.locales.push(...locales);
+            if (isArray(defaultNamespace)) {
+                defaultNamespace = defaultNamespace.join(separator);
             }
-            if (cb) {
-                cb.apply(this, locales);
-            }
+
+            return function (key, values, formats, fallback) {
+                var message = void 0;
+                var namespace = defaultNamespace;
+                if (key && !isArray(key) && (typeof key === 'undefined' ? 'undefined' : _typeof(key)) === 'object') {
+                    var _key = key;
+                    key = _key.key;
+                    values = _key.values;
+                    formats = _key.formats;
+                    fallback = _key.fallback;
+                }
+                if (!isArray(key)) {
+                    if (!namespace && String(key).includes(separator)) {
+                        key = key.split(separator);
+                    }
+                }
+                if (isArray(key)) {
+                    // e.g., [ns1, ns2, key]
+                    var newKey = key.pop();
+                    namespace = key.join(separator);
+                    key = newKey;
+                }
+                if (!key) {
+                    throw new TypeError('A key must be supplied to a localizer/namespacer function');
+                }
+                function findMessage(locales) {
+                    locales.some(function (locale) {
+                        message = locale[(namespace ? namespace + separator : '') + key] || messageForNSParts(locale, namespace, separator, key);
+                        return message;
+                    });
+                    return message;
+                }
+                findMessage(_this3.locales);
+                if (!message) {
+                    if (typeof fallback === 'function') {
+                        return fallback({
+                            namespace: namespace, separator: separator, key: key, values: values, formats: formats, // eslint-disable-line object-property-newline
+                            message: _this3.fallbackLocales.length && findMessage(_this3.fallbackLocales),
+                            languages: _this3.languages,
+                            fallbackLanguages: _this3.fallbackLanguages
+                        });
+                    }
+                    if (fallback === false || !_this3.fallbackLocales.length) {
+                        throw new Error('Message not found for locales ' + _this3.languages + (_this3.fallbackLanguages ? ' (with fallback languages ' + _this3.fallbackLanguages + ')' : '') + (' with key ' + key + ', namespace ' + namespace) + (', and namespace separator ' + separator));
+                    }
+                    message = findMessage(_this3.fallbackLocales);
+                }
+                if (!values && !formats) {
+                    return message;
+                }
+                _this3.intlMessageFormat = new IntlMessageFormat(message, _this3.languages, formats);
+                return _this3.intlMessageFormat.format(values);
+            };
         }
-    );
-};
+    }]);
+    return IMF;
+}();
+
+function imf(IMF, _ref5) {
+    var options = _ref5.options;
+    return __async( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+        var imfInstance, formatterNamespacerAndLocales;
+        return regeneratorRuntime.wrap(function _callee6$(_context6) {
+            while (1) {
+                switch (_context6.prev = _context6.next) {
+                    case 0:
+                        imfInstance = new IMF(options);
+                        _context6.next = 3;
+                        return imfInstance.load(options);
+
+                    case 3:
+                        formatterNamespacerAndLocales = _context6.sent;
+                        return _context6.abrupt('return', _extends({ imfInstance: imfInstance }, formatterNamespacerAndLocales));
+
+                    case 5:
+                    case 'end':
+                        return _context6.stop();
+                }
+            }
+        }, _callee6, this);
+    })());
+}
 
 /* eslint-env node */
+
 if (typeof global !== 'undefined') {
     global.IntlMessageFormat = MessageFormat;
+} else {
+    window.IntlMessageFormat = MessageFormat;
 }
 
-const write = (...msgs) => {
-    if (typeof document !== 'undefined') {
-        document.body.append(
-            ...msgs, ...Array.from({length: 2}, () => document.createElement('br'))
-        );
-    } else {
-        console.log(...msgs);
-    }
-};
-IMFClass({
-    languages: ['zh-CN', 'en-US'],
-    callback: function (l, getFormatter) { // , enLocale, esLocale, ptLocale, zhCNLocale
-        write(l('Localized value!')); // Looks up 'Localized value!' in Chinese file (at 'locales/zh-CN.json') and in English (at 'locales/en.json') if not present in Chinese
-        const tk = getFormatter('tablekey');
-        write(tk('Tablekey localized value!')); // Equivalent to l('tablekey.Tablekey localized value!')
-
-        const tk2 = getFormatter(['tablekey', 'nestedMore']);
-        write(tk2('Tablekey localized value2'));
-
-        const tk3 = getFormatter('tablekey.nestedMore');
-
-        write(tk3('Tablekey localized value2'));
-
-        IMFClass({
-            languages: 'zh-CN',
-            fallbackLanguages: 'en-US',
-            callback: function (l, getFormatter) {
-                l({
-                    key: 'onlyInEnglish',
-                    fallback (res) {
-                        write(res.message);
-                    }
-                });
-            }
-        });
-    }
-});
-
-})));
+export default imf;
+export { IMF, imf };

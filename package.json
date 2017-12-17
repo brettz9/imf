@@ -7,9 +7,9 @@
     "author": "Brett Zamir",
     "contributors": [],
     "scripts": {
-        "eslint": "eslint *.js && eslint tests/*.js",
+        "eslint": "eslint *.js src/*.js && eslint tests/*.js",
         "build": "rollup -c",
-        "test": "npm run eslint && npm run build && npm run test-build && node tests/index-node",
+        "test": "npm run eslint && npm run build && npm run test-build && node build/index-node",
         "browser-test": "npm run eslint && npm run build && npm run test-build && npm start tests/",
         "test-build": "rollup -c rollup.config.test.js"
     },
@@ -36,6 +36,7 @@
         "rollup-plugin-async": "1.2.0",
         "rollup-plugin-babel": "3.0.3",
         "rollup-plugin-commonjs": "9.1.0",
+        "rollup-plugin-json": "^2.3.0",
         "rollup-plugin-node-resolve": "3.3.0"
     },
     "repository": {

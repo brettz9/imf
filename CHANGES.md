@@ -1,3 +1,29 @@
+# 4.0.0
+
+- Breaking change: Rename `getFormatter` to `namespacer`.
+- Breaking change: Rename `langs` to `languages`
+- Breaking change: Remove `callback` (return a `Promise` instead
+    from `IMF.load()` or `imf`); no longer allow loading from constructor;
+   the promise also returns results on object rather than array.
+- Breaking change: Require `languages`, `fallbackLanguages`, and `namespace`
+    on `IMF.load()` or `imf` instead of `IMF()`.
+- Breaking change: Remove `cb` option for `loadLocales` (returns Promise only)
+- Breaking change: For `loadLocales`, add `langauges` to `langs` rather than
+    replacing them.
+- Breaking change: Moved file to `dist`.
+- Breaking change: Throw in namespacer function if no message and no fallback
+    locales are present
+- Breaking change: Throw if no `key` argument is given to a namespacer function
+- Breaking fix: In namespacer function, any detected fallback messages will be
+    processed by `IntlMessageFormat` as well.
+- Enhancement: Dynamically load plural/parent locale rules (unless
+    `avoidRuleLoading` supplied) and cache
+- Enhancement: Expose `intlMessageFormat` instance as property
+- Enhancement: Expose a `fallbackLanguages` method
+- Fix: From `loadLocales` return `this.locales`/`this.fallbackLocales`
+    instead of the just recently retrieved ones (as all can apply)
+- Docs: Demonstrate with `Promise` (`await`); use `_` more prominently in demos
+
 # 3.0.1
 
 - Fix: Browser build was not using browse-only modules

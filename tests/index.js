@@ -1,5 +1,5 @@
 /* globals IntlMessageFormat */
-import {getIMF} from '../setFormat.js';
+import {imf, IMF} from '../src/index.js';
 
 const write = (...msgs) => {
     if (typeof document !== 'undefined') {
@@ -12,29 +12,27 @@ const write = (...msgs) => {
 };
 
 (async () => {
-    const {IMF, IMFFormatter} = await getIMF({localized: true});
-
-    const {f, makeSubFormatter} = await IMFFormatter({languages: ['zh-CN', 'en-US']});
+    const {_, namespacer} = await imf({languages: ['zh-CN', 'en-US']});
     // , enLocale, esLocale, ptLocale, zhCNLocale
 
     // Todo: Change to real tests and also include actual formatting examples!
-    write(f('Localized value!')); // Looks up 'Localized value!' in Chinese file (at 'locales/zh-CN.json') and in English (at 'locales/en.json') if not present in Chinese
+    write(_('Localized value!')); // Looks up 'Localized value!' in Chinese file (at 'locales/zh-CN.json') and in English (at 'locales/en.json') if not present in Chinese
 
-    const tkf = makeSubFormatter('tablekey');
-    write(tkf('Tablekey localized value!')); // Equivalent to l('tablekey.Tablekey localized value!')
+    const _tk = namespacer('tablekey');
+    write(_tk('Tablekey localized value!')); // Equivalent to l('tablekey.Tablekey localized value!')
 
-    const tkf2 = makeSubFormatter(['tablekey', 'nestedMore']);
-    write(tkf2('Tablekey localized value2'));
+    const _tk2 = namespacer(['tablekey', 'nestedMore']);
+    write(_tk2('Tablekey localized value2'));
 
-    const tkf3 = makeSubFormatter('tablekey.nestedMore');
-    write(tkf3('Tablekey localized value2'));
+    const _tk3 = namespacer('tablekey.nestedMore');
+    write(_tk3('Tablekey localized value2'));
 
-    const imfFallback = IMF({
+    const imfFallback = new IMF({
         languages: 'zh-CN',
         fallbackLanguages: 'en-US'
     });
-    const {_} = await imfFallback.formattersAndLocales();
-    _({
+    const {f} = await imfFallback.load();
+    f({
         key: 'onlyInEnglish',
         fallback (res) {
             write(res.message);
