@@ -1,3 +1,12 @@
+# 3.0.0
+
+- Build breaking change: Move builds to `dist`
+- Build enhancement: Add ES6 module build
+- Fix: Eliminate remaining global for pseudo-polyfill (`IntlMessageFormat`)
+- npm: Update packaging files
+- npm: Update simple-get-json and devDeps
+- Testing: Make tests more cross-browser
+
 # 2.1.1
 
 - Fix `.npmignore`
