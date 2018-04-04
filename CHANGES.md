@@ -1,3 +1,8 @@
+# 3.0.1
+
+- Fix: Browser build was not using browse-only modules
+- npm: Update devDeps
+
 # 3.0.0
 
 - Build breaking change: Move builds to `dist`

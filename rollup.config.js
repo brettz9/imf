@@ -15,7 +15,7 @@ export default [{
         nodeResolve({
             modulesOnly: true,
             main: false,
-            browser: false,
+            browser: true,
             module: true,
             jsnext: true // intl-messageformat is still using instead of `module`
         })
