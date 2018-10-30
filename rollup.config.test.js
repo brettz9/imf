@@ -1,5 +1,4 @@
 import nodeResolve from 'rollup-plugin-node-resolve';
-import async from 'rollup-plugin-async'; // simple-get-json
 
 export default [{
     input: 'tests/index.js',
@@ -9,7 +8,6 @@ export default [{
         name: 'testImf'
     },
     plugins: [
-        async(),
         nodeResolve({
             modulesOnly: true,
             main: false,
@@ -26,7 +24,6 @@ export default [{
         name: 'testImf'
     },
     plugins: [
-        async(),
         nodeResolve({
             modulesOnly: true,
             main: false,

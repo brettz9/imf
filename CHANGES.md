@@ -1,3 +1,13 @@
+# 4.0.0
+
+- Breaking change: Add es6 polyglot distribution in `dist` and point to
+    it from `package.json` `module` (also move sources to `src`)
+- Fix: Node resolution was broken for building `dist/index.js`
+- Enhancement: Add `@babel/polyfill` as dependency
+- Linting (ESLint): Override "standard" for `object-curly-spacing`;
+- npm: Update to Babel7 and other devDeps; rename `build` to `rollup`;
+    remove unneeded `rollup-plugin-async`
+
 # 3.0.1
 
 - Fix: Browser build was not using browse-only modules
