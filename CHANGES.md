@@ -1,3 +1,7 @@
+# 4.0.1
+
+- Fix: Ensure `dist` includes `index-es6-polyglot.js`
+
 # 4.0.0
 
 - Breaking change: Add es6 polyglot distribution in `dist` and point to

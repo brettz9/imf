@@ -55,7 +55,7 @@ export default [{
 }, {
     input: 'src/index-es6-polyglot.js',
     output: {
-        file: 'dist/index-polyglot.js',
+        file: 'dist/index-es6-polyglot.js',
         format: 'es',
         name: 'IMF'
     },
