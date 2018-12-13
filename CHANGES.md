@@ -1,3 +1,11 @@
+# 4.1.0
+
+- Build: Make CJS-specific build (to avoid need for
+    regenerator-runtime/polyfill
+- Testing: Since using polyglot file, must import polyfill
+- npm: Add `prepublishOnly` script for yarn
+- npm: Update devDeps
+
 # 4.0.1
 
 - Fix: Ensure `dist` includes `index-es6-polyglot.js`

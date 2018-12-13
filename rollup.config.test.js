@@ -1,16 +1,14 @@
 import nodeResolve from 'rollup-plugin-node-resolve';
 
 export default [{
-    input: 'tests/index.js',
+    input: 'tests/index-node-entry.js',
     output: {
         file: 'tests/index-node.js',
-        format: 'umd',
-        name: 'testImf'
+        format: 'cjs'
     },
     plugins: [
         nodeResolve({
-            modulesOnly: true,
-            main: false,
+            main: true,
             browser: false,
             module: true,
             jsnext: true // intl-messageformat is still using instead of `module`
@@ -25,7 +23,6 @@ export default [{
     },
     plugins: [
         nodeResolve({
-            modulesOnly: true,
             main: false,
             browser: false,
             module: true,
