@@ -1,7 +1,8 @@
 import babel from 'rollup-plugin-babel';
 import nodeResolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
-import builtins from 'rollup-plugin-node-builtins';
+// import commonjs from 'rollup-plugin-commonjs';
+// import builtins from 'rollup-plugin-node-builtins';
+import pkg from './package.json';
 
 export default [{
     input: 'src/index-es6.js',
@@ -77,6 +78,7 @@ export default [{
         file: 'dist/index-cjs.js',
         format: 'cjs'
     },
+    external: Object.keys(pkg.dependencies),
     plugins: [
         babel({
             babelrc: false
@@ -87,8 +89,6 @@ export default [{
             browser: false,
             module: false,
             jsnext: true // intl-messageformat is still using instead of `module`
-        }),
-        builtins(),
-        commonjs()
+        })
     ]
 }];

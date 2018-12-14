@@ -1,3 +1,7 @@
+# 4.1.1
+
+- Fix: Avoid bundling in CJS build
+
 # 4.1.0
 
 - Build: Make CJS-specific build (to avoid need for
