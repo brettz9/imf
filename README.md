@@ -9,7 +9,8 @@ A convenience wrapper for [intl-messageformat](https://github.com/yahoo/intl-mes
 # Usage (Browser)
 
 ```html
-<script src="node_modules/@babel/polyfill/dist/polyfill.js"></script>
+<script src="node_modules/core-js-bundle/minified.js"></script>
+<script src="node_modules/regenerator-runtime/runtime.js"></script>
 <script src="node_modules/intl-messageformat/dist/intl-messageformat-with-locales.min.js"></script>
 <script src="node_modules/imf/dist/index.js"></script>
 ```
@@ -70,19 +71,26 @@ OR
 
 ```js
 IMF({
-    languages: ['zh-CN', 'en-US'],
-    callback: function (l, getFormatter /*, enUSLocale, esLocale, ptLocale, zhCNLocale*/) {
-        alert(l("Localized value!")); // Looks up "Localized value!" in Chinese file (at "locales/zh-CN.json") and in English (at "locales/en-US.json") if not present in Chinese
-        const tk = getFormatter('tablekey');
-        alert(tk("Tablekey localized value!")); // Equivalent to l("tablekey.Tablekey localized value!")
+  languages: ['zh-CN', 'en-US'],
+  callback (
+    l, getFormatter /* , enUSLocale, esLocale, ptLocale, zhCNLocale */
+  ) {
+    // Looks up "Localized value!" in Chinese file (at
+    //   "locales/zh-CN.json") and in English (at
+    //   "locales/en-US.json") if not present in Chinese
+    alert(l('Localized value!'));
 
-        // Note that the following two sets are equivalent
-        const tk2 = getFormatter(['tablekey', 'nestedMore']);
-        alert(tk2("Tablekey localized value2"));
+    const tk = getFormatter('tablekey');
+    // Equivalent to l("tablekey.Tablekey localized value!")
+    alert(tk('Tablekey localized value!'));
 
-        const tk3 = getFormatter('tablekey.nestedMore');
-        alert(tk3("Tablekey localized value2"));
-    }
+    // Note that the following two sets are equivalent
+    const tk2 = getFormatter(['tablekey', 'nestedMore']);
+    alert(tk2('Tablekey localized value2'));
+
+    const tk3 = getFormatter('tablekey.nestedMore');
+    alert(tk3('Tablekey localized value2'));
+  }
 });
 ```
 
@@ -240,8 +248,12 @@ IMF({
     `IntlMessageFormat.__addLocaleData()` ourselves). Won't be necessary
     for browser in future if implemented
 ```js
-const text = (await fetch('path/to/Yahoo/IntlMessageFormat/dist/locale-data/XX.js')).text();
+(async () => {
+const text = (
+  await fetch('path/to/Yahoo/IntlMessageFormat/dist/locale-data/XX.js')
+).text();
 console.log(text);
+})();
 ```
 1.  Support JSONP (allowing for multi-line template strings or other
     deviants from non-JSON syntax like single quotes).

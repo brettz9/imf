@@ -1,8 +1,15 @@
-# 4.1.1
+# Changes to imf
+
+## ?
+
+- Lint (ESLint): Lint Markdown and HTML
+- npm: Switch to non-deprecated `@rollup/plugin-node-resolve`
+
+## 4.1.1
 
 - Fix: Avoid bundling in CJS build
 
-# 4.1.0
+## 4.1.0
 
 - Build: Make CJS-specific build (to avoid need for
     regenerator-runtime/polyfill
@@ -10,11 +17,11 @@
 - npm: Add `prepublishOnly` script for yarn
 - npm: Update devDeps
 
-# 4.0.1
+## 4.0.1
 
 - Fix: Ensure `dist` includes `index-es6-polyglot.js`
 
-# 4.0.0
+## 4.0.0
 
 - Breaking change: Add es6 polyglot distribution in `dist` and point to
     it from `package.json` `module` (also move sources to `src`)
@@ -24,12 +31,12 @@
 - npm: Update to Babel7 and other devDeps; rename `build` to `rollup`;
     remove unneeded `rollup-plugin-async`
 
-# 3.0.1
+## 3.0.1
 
 - Fix: Browser build was not using browse-only modules
 - npm: Update devDeps
 
-# 3.0.0
+## 3.0.0
 
 - Build breaking change: Move builds to `dist`
 - Build enhancement: Add ES6 module build
@@ -38,20 +45,20 @@
 - npm: Update simple-get-json and devDeps
 - Testing: Make tests more cross-browser
 
-# 2.1.1
+## 2.1.1
 
 - Fix `.npmignore`
 - License: Rename LICENSE to LICENSE-MIT.txt
 - npm: Update dep
 
-# 2.1.0
+## 2.1.0
 
 - npm: Bump simple-get-json version
 - npm: Update devDeps
 - npm: Switch to babel-preset-env
 - Build: Add Yarn lock
 
-# 2.0.0
+## 2.0.0
 
 - Refactoring: Switch to ES6 Modules, arrow functions, etc. in source and tests
 - npm: Add `browser` and `module` in `package.json` (and change `main`)
@@ -62,19 +69,19 @@
     case needed in browser too (can still make a build based off `index-es6.js`
     without it)
 
-# 1.0.2
+## 1.0.2
 
 - Properly ensure publishing current tagged version
 
-# 1.0.0
+## 1.0.0
 
 - Switch to npm over bower
 
-# 0.9.0
+## 0.9.0
 
 - Critical fix to message finding
 
-# 0.8.0
+## 0.8.0
 
 - Change `fallbackLocale` property to `fallbackLocales` array. New
     property defaults to an empty array and is populated if
@@ -98,35 +105,35 @@
     `languages` having been provided, corresponding language
     codes can be provided in error messages.
 
-# 0.7.0
+## 0.7.0
 
 - Allow `locales` property to be set as an option at instantiation
     and added to by `loadLocales`.
 
-# 0.6.0
+## 0.6.0
 
 - Add property `fallbackLanguages` and utilize in error messages
 
 - Avoid setting `langs` property for fallback language (for
       `loadLocales` calls with `avoidSettingLocales` set to true)
 
-# 0.5.0
+## 0.5.0
 
 - Cache Array.isArray, Allow array as ns+key argument or as
     separator-separated string
 
-# 0.4.0
+## 0.4.0
 
 - Allow `fallback` to be a boolean instead of only a callback;
     will return message of the `fallbackLocale` (as may be determined
     by`fallbackLanguages`).
 
-# 0.3.0
+## 0.3.0
 
 - Rename `fallbackLanguage` to `fallbackLanguages` for accuracy
     and parity with `languages`
 
-# 0.2.0
+## 0.2.0
 
 - Allow formatter function to be supplied arguments as an object
 
@@ -139,10 +146,10 @@
     of the `fallbackLanguages` locale if `fallbackLanguage` (or
     `fallbackLocales`) had been supplied.
 
-# 0.1.2
+## 0.1.2
 
 - Avoid bundling intl-messageformat dependency
 
-# 0.1.1
+## 0.1.1
 
 - Bug: Avoid double-addition of separator for arrays

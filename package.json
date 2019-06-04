@@ -1,53 +1,65 @@
 {
-    "name": "imf",
-    "version": "4.1.1",
-    "browser": "dist/index.js",
-    "main": "dist/index-cjs.js",
-    "module": "dist/index-es6-polyglot.js",
-    "author": "Brett Zamir",
-    "contributors": [],
-    "scripts": {
-        "prepublishOnly": "yarn",
-        "eslint": "eslint *.js && eslint tests/*.js",
-        "rollup": "rollup -c",
-        "test": "npm run eslint && npm run rollup && npm run test-build && node tests/index-node",
-        "browser-test": "npm run eslint && npm run rollup && npm run test-build && npm start tests/",
-        "test-build": "rollup -c rollup.config.test.js"
-    },
-    "dependencies": {
-        "@babel/polyfill": "^7.0.0",
-        "intl-messageformat": "2.2.0",
-        "simple-get-json": "4.1.0"
-    },
-    "devDependencies": {
-        "@babel/core": "^7.2.0",
-        "@babel/preset-env": "^7.2.0",
-        "eslint": "5.10.0",
-        "eslint-config-standard": "12.0.0",
-        "eslint-plugin-compat": "2.6.3",
-        "eslint-plugin-import": "2.14.0",
-        "eslint-plugin-node": "8.0.0",
-        "eslint-plugin-promise": "4.0.1",
-        "eslint-plugin-standard": "4.0.0",
-        "node-static": "0.7.11",
-        "opn": "5.4.0",
-        "remark-lint": "^6.0.4",
-        "rollup": "0.67.4",
-        "rollup-plugin-babel": "4.1.0",
-        "rollup-plugin-commonjs": "^9.2.0",
-        "rollup-plugin-node-builtins": "^2.1.2",
-        "rollup-plugin-node-resolve": "4.0.0"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/brettz9/imf"
-    },
-    "description": "A convenience wrapper for Yahoo's intl-messageformat localization library",
-    "keywords": [
-        "l10n"
-    ],
-    "license": "MIT",
-    "bugs": "https://github.com/brettz9/imf/issues",
-    "engines": {},
-    "homepage": "https://github.com/brettz9/imf"
+  "name": "imf",
+  "version": "4.1.1",
+  "browser": "dist/index.js",
+  "main": "dist/index-cjs.js",
+  "module": "dist/index-es6-polyglot.js",
+  "author": "Brett Zamir",
+  "contributors": [],
+  "scripts": {
+    "eslint": "eslint --ext=js,md,html .",
+    "rollup": "rollup -c",
+    "test": "npm run eslint && npm run rollup && node -r esm tests/index-node-entry",
+    "start": "static -p 8088",
+    "browser-test": "npm run eslint && npm run rollup && open-cli http://localhost:8088/tests/ && npm start"
+  },
+  "dependencies": {
+    "core-js-bundle": "^3.4.1",
+    "intl-messageformat": "7.5.2",
+    "regenerator-runtime": "^0.13.3",
+    "simple-get-json": "6.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.2",
+    "@babel/preset-env": "^7.7.1",
+    "@mysticatea/eslint-plugin": "^13.0.0",
+    "@rollup/plugin-node-resolve": "^6.0.0",
+    "eslint": "^6.6.0",
+    "eslint-config-ash-nazg": "^11.5.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-array-func": "^3.1.3",
+    "eslint-plugin-compat": "^3.3.0",
+    "eslint-plugin-eslint-comments": "^3.1.2",
+    "eslint-plugin-html": "^6.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsdoc": "^18.1.1",
+    "eslint-plugin-markdown": "^1.0.1",
+    "eslint-plugin-no-use-extend-native": "^0.4.1",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-sonarjs": "^0.5.0",
+    "eslint-plugin-standard": "^4.0.1",
+    "eslint-plugin-unicorn": "^13.0.0",
+    "esm": "^3.2.25",
+    "node-static": "0.7.11",
+    "open-cli": "^5.0.0",
+    "remark-lint": "^6.0.5",
+    "rollup": "1.27.2",
+    "rollup-plugin-babel": "4.3.3",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "typescript": "^3.7.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brettz9/imf"
+  },
+  "description": "A convenience wrapper for Yahoo's intl-messageformat localization library",
+  "keywords": [
+    "l10n"
+  ],
+  "license": "MIT",
+  "bugs": "https://github.com/brettz9/imf/issues",
+  "engines": {},
+  "homepage": "https://github.com/brettz9/imf"
 }

@@ -5,9 +5,14 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 var IntlMessageFormat = _interopDefault(require('intl-messageformat'));
 var getJSON = _interopDefault(require('simple-get-json'));
 
-// If strawman approved, this would only be
+// Todo: Reenable
+/**
+ * @param opts
+ * @returns {IMFClass}
+ */
 
 function IMFClass(opts) {
+  // eslint-disable-next-line no-restricted-syntax
   if (!(this instanceof IMFClass)) {
     return new IMFClass(opts);
   }
@@ -24,40 +29,48 @@ function IMFClass(opts) {
 
   this.locales = opts.locales || [];
   this.langs = opts.langs;
-  this.fallbackLocales = opts.fallbackLocales || [];
+  this.fallbackLocales = opts.fallbackLocales || []; // eslint-disable-next-line promise/prefer-await-to-callbacks
 
   const loadFallbacks = cb => {
     this.loadLocales(this.fallbackLanguages, function (...fallbackLocales) {
       this.fallbackLocales.push(...fallbackLocales);
 
       if (cb) {
+        // eslint-disable-next-line promise/prefer-await-to-callbacks
         return cb(fallbackLocales);
       }
+
+      return undefined;
     }, true);
   };
 
   if (opts.languages || opts.callback) {
-    this.loadLocales(opts.languages, () => {
-      const locales = Array.from(arguments);
-
+    this.loadLocales(opts.languages, (...locales) => {
       const runCallback = fallbackLocales => {
         if (opts.callback) {
-          opts.callback.apply(this, [this.getFormatter(opts.namespace), this.getFormatter.bind(this), locales, fallbackLocales]);
+          Reflect.apply(opts.callback, this, [this.getFormatter(opts.namespace), this.getFormatter.bind(this), locales, fallbackLocales]);
         }
       };
 
-      if (opts.hasOwnProperty('fallbackLanguages')) {
+      if ({}.hasOwnProperty.call(opts, 'fallbackLanguages')) {
         loadFallbacks(runCallback);
       } else {
         runCallback();
       }
     });
-  } else if (opts.hasOwnProperty('fallbackLanguages')) {
+  } else if ({}.hasOwnProperty.call(opts, 'fallbackLanguages')) {
     loadFallbacks();
   }
 }
 
 IMFClass.prototype.getFormatter = function (ns, sep) {
+  /**
+   * @param locale
+   * @param namesp
+   * @param separator
+   * @param key
+   * @returns {string}
+   */
   function messageForNSParts(locale, namesp, separator, key) {
     let loc = locale;
     const found = namesp.split(separator).every(function (nsPart) {
@@ -67,7 +80,9 @@ IMFClass.prototype.getFormatter = function (ns, sep) {
     return found && loc[key] ? loc[key] : '';
   }
 
-  const isArray = Array.isArray;
+  const {
+    isArray
+  } = Array;
   ns = ns === undefined ? this.defaultNamespace : ns;
   sep = sep === undefined ? this.defaultSeparator : sep;
   ns = isArray(ns) ? ns.join(sep) : ns;
@@ -76,10 +91,12 @@ IMFClass.prototype.getFormatter = function (ns, sep) {
     let currNs = ns;
 
     if (key && !isArray(key) && typeof key === 'object') {
-      values = key.values;
-      formats = key.formats;
-      fallback = key.fallback;
-      key = key.key;
+      ({
+        values,
+        formats,
+        fallback,
+        key
+      } = key);
     }
 
     if (isArray(key)) {
@@ -96,6 +113,11 @@ IMFClass.prototype.getFormatter = function (ns, sep) {
         key = key.slice(keyPos + 1);
       }
     }
+    /**
+     * @param locales
+     * @returns {string}
+     */
+
 
     function findMessage(locales) {
       locales.some(function (locale) {
