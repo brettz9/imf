@@ -1,5 +1,7 @@
 # imf
 
+**This package is now deprecated in favor of [intl-dom](https://github.com/brettz9/intl-dom)**
+
 A convenience wrapper for [intl-messageformat](https://github.com/yahoo/intl-messageformat).
 
 # Installation

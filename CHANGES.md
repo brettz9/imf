@@ -1,3 +1,7 @@
+# 4.1.2
+
+- Bump version to give deprecation notice in favor of `intl-dom`
+
 # 4.1.1
 
 - Fix: Avoid bundling in CJS build
