@@ -1,4 +1,6 @@
-import IMF from '../src/index-es6-polyglot.js';
+import {IMF} from '../dist/index-es6-polyglot.js';
+
+const basePath = 'test/locales/';
 
 const write = (...msgs) => {
     if (typeof document !== 'undefined') {
@@ -10,6 +12,7 @@ const write = (...msgs) => {
     }
 };
 IMF({
+    basePath,
     languages: ['zh-CN', 'en-US'],
     callback: function (l, getFormatter) { // , enLocale, esLocale, ptLocale, zhCNLocale
         write(l('Localized value!')); // Looks up 'Localized value!' in Chinese file (at 'locales/zh-CN.json') and in English (at 'locales/en.json') if not present in Chinese
@@ -24,6 +27,7 @@ IMF({
         write(tk3('Tablekey localized value2'));
 
         IMF({
+            basePath,
             languages: 'zh-CN',
             fallbackLanguages: 'en-US',
             callback: function (l, getFormatter) {

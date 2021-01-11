@@ -11,7 +11,6 @@ A convenience wrapper for [intl-messageformat](https://github.com/yahoo/intl-mes
 # Usage (Browser)
 
 ```html
-<script src="node_modules/@babel/polyfill/dist/polyfill.js"></script>
 <script src="node_modules/intl-messageformat/dist/intl-messageformat-with-locales.min.js"></script>
 <script src="node_modules/imf/dist/index.js"></script>
 ```

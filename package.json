@@ -1,53 +1,53 @@
 {
-    "name": "imf",
-    "version": "4.1.2",
-    "browser": "dist/index.js",
-    "main": "dist/index-cjs.js",
-    "module": "dist/index-es6-polyglot.js",
-    "author": "Brett Zamir",
-    "contributors": [],
-    "scripts": {
-        "prepublishOnly": "yarn",
-        "eslint": "eslint *.js && eslint tests/*.js",
-        "rollup": "rollup -c",
-        "test": "npm run eslint && npm run rollup && npm run test-build && node tests/index-node",
-        "browser-test": "npm run eslint && npm run rollup && npm run test-build && npm start tests/",
-        "test-build": "rollup -c rollup.config.test.js"
-    },
-    "dependencies": {
-        "@babel/polyfill": "^7.0.0",
-        "intl-messageformat": "2.2.0",
-        "simple-get-json": "4.1.0"
-    },
-    "devDependencies": {
-        "@babel/core": "^7.2.0",
-        "@babel/preset-env": "^7.2.0",
-        "eslint": "5.10.0",
-        "eslint-config-standard": "12.0.0",
-        "eslint-plugin-compat": "2.6.3",
-        "eslint-plugin-import": "2.14.0",
-        "eslint-plugin-node": "8.0.0",
-        "eslint-plugin-promise": "4.0.1",
-        "eslint-plugin-standard": "4.0.0",
-        "node-static": "0.7.11",
-        "opn": "5.4.0",
-        "remark-lint": "^6.0.4",
-        "rollup": "0.67.4",
-        "rollup-plugin-babel": "4.1.0",
-        "rollup-plugin-commonjs": "^9.2.0",
-        "rollup-plugin-node-builtins": "^2.1.2",
-        "rollup-plugin-node-resolve": "4.0.0"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/brettz9/imf"
-    },
-    "description": "A convenience wrapper for Yahoo's intl-messageformat localization library",
-    "keywords": [
-        "l10n"
-    ],
-    "license": "MIT",
-    "bugs": "https://github.com/brettz9/imf/issues",
-    "engines": {},
-    "homepage": "https://github.com/brettz9/imf"
+  "name": "imf",
+  "version": "5.0.0",
+  "browser": "dist/index.js",
+  "main": "dist/index-cjs.js",
+  "module": "dist/index-es6-polyglot.js",
+  "author": "Brett Zamir",
+  "contributors": [],
+  "scripts": {
+    "start": "static -p 8088",
+    "open": "open-cli http://127.0.0.1:8088/test/ && npm start",
+    "eslint": "eslint .",
+    "rollup": "rollup -c",
+    "test": "npm run eslint && npm run rollup && node --require esm test/index",
+    "browser-test": "npm run eslint && npm run rollup && npm run open"
+  },
+  "dependencies": {
+    "intl-messageformat": "9.4.3",
+    "simple-get-json": "8.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "@rollup/plugin-babel": "^5.2.2",
+    "@rollup/plugin-commonjs": "^17.0.0",
+    "@rollup/plugin-node-resolve": "^11.0.1",
+    "eslint": "7.17.0",
+    "eslint-config-standard": "16.0.2",
+    "eslint-plugin-compat": "3.9.0",
+    "eslint-plugin-import": "2.22.1",
+    "eslint-plugin-node": "11.1.0",
+    "eslint-plugin-promise": "4.2.1",
+    "eslint-plugin-standard": "4.1.0",
+    "esm": "^3.2.25",
+    "node-static": "0.7.11",
+    "open-cli": "^6.0.1",
+    "rollup": "2.36.1",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-re": "^1.0.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brettz9/imf"
+  },
+  "description": "A convenience wrapper for Yahoo's intl-messageformat localization library",
+  "keywords": [
+    "l10n"
+  ],
+  "license": "MIT",
+  "bugs": "https://github.com/brettz9/imf/issues",
+  "engines": {},
+  "homepage": "https://github.com/brettz9/imf"
 }
