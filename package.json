@@ -7,7 +7,7 @@
   "author": "Brett Zamir",
   "contributors": [],
   "scripts": {
-    "start": "static -p 8088",
+    "start": "http-server -p 8088",
     "open": "open-cli http://127.0.0.1:8088/test/ && npm start",
     "eslint": "eslint .",
     "rollup": "rollup -c",
@@ -32,7 +32,7 @@
     "eslint-plugin-promise": "4.2.1",
     "eslint-plugin-standard": "4.1.0",
     "esm": "^3.2.25",
-    "node-static": "0.7.11",
+    "http-server": "^0.12.3",
     "open-cli": "^6.0.1",
     "rollup": "2.36.1",
     "rollup-plugin-node-builtins": "^2.1.2",
