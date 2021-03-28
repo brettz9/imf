@@ -1,5 +1,11 @@
 # CHANGES for `imf`
 
+## 5.0.2
+
+- npm: Update `intl-messageformat`, add `local-xmlhttprequest`
+- npm: Update devDeps. and switch to compatible rollup-plugin-postprocess fork
+- npm: Switch to pnpm
+
 ## 5.0.1
 
 - npm: Update `simple-get-json`
