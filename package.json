@@ -1,6 +1,6 @@
 {
   "name": "imf",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "browser": "dist/index.js",
   "main": "dist/index-cjs.js",
   "module": "dist/index-es6-polyglot.js",
@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "intl-messageformat": "9.4.3",
-    "simple-get-json": "8.1.0"
+    "simple-get-json": "8.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",

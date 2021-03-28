@@ -1,5 +1,12 @@
 # CHANGES for `imf`
 
+## 5.0.1
+
+- npm: Update `simple-get-json`
+- Dev security: Switch to server (`http-server`) without reported
+    vulnerabilities
+- Testing: Fix browser test
+
 ## 5.0.0
 
 Adding additional version (after deprecation) to avoid bundling
