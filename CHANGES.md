@@ -1,5 +1,9 @@
 # CHANGES for `imf`
 
+## ?
+
+- Linting (LGTM): Add lgtm.yml
+
 ## 5.0.2
 
 - npm: Update `intl-messageformat`, add `local-xmlhttprequest`
